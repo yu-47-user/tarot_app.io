@@ -12,6 +12,8 @@ body {
   box-shadow: 0 2px 8px #ccc;
   max-width: 700px;
   padding: 20px;
+  position: relative;
+  height: 420px;
 }
 #note {
   width: 90%;
@@ -41,7 +43,20 @@ button:hover {
   background: #fff;
 }
 .tarot-card {
-  display: inline-block;
-  margin: 10px;
+  display: block;
+  position: absolute;
+  text-align: center;
+}
+#deck-area {
+  position: absolute;
+  left: 30px;
+  top: 40px;
+  width: 140px;
+  height: 220px;
+  z-index: 10;
+}
+.tarot-deck {
+  display: block;
+  margin: 0 auto;
   text-align: center;
 }

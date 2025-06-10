@@ -5,5 +5,145 @@
     "arcana": "Major",
     "number": 0,
     "image": "tarot/00_The_fool.jpg"
+  },
+  {
+    "id": "major_1",
+    "name": "The Magician",
+    "arcana": "Major",
+    "number": 1,
+    "image": "tarot/01_Magician.jpeg"
+  },
+  {
+    "id": "major_2",
+    "name": "The High Priestess",
+    "arcana": "Major",
+    "number": 2,
+    "image": "tarot/02_High_Priestess.jpg"
+  },
+  {
+    "id": "major_3",
+    "name": "The Empress",
+    "arcana": "Major",
+    "number": 3,
+    "image": "tarot/03_Empress.jpg"
+  },
+  {
+    "id": "major_4",
+    "name": "The Emperor",
+    "arcana": "Major",
+    "number": 4,
+    "image": "tarot/04_Emperor.jpg"
+  },
+  {
+    "id": "major_5",
+    "name": "The Hierophant",
+    "arcana": "Major",
+    "number": 5,
+    "image": "tarot/05_Hierophant.jpg"
+  },
+  {
+    "id": "major_6",
+    "name": "The Lovers",
+    "arcana": "Major",
+    "number": 6,
+    "image": "tarot/06_Lovers.jpg"
+  },
+  {
+    "id": "major_7",
+    "name": "The Chariot",
+    "arcana": "Major",
+    "number": 7,
+    "image": "tarot/07_Chariot.jpg"
+  },
+  {
+    "id": "major_8",
+    "name": "Strength",
+    "arcana": "Major",
+    "number": 8,
+    "image": "tarot/08_Strength.jpg"
+  },
+  {
+    "id": "major_9",
+    "name": "The Hermit",
+    "arcana": "Major",
+    "number": 9,
+    "image": "tarot/09_Hermit.jpg"
+  },
+  {
+    "id": "major_10",
+    "name": "Wheel of Fortune",
+    "arcana": "Major",
+    "number": 10,
+    "image": "tarot/10_Wheel_of_Fortune.jpg"
+  },
+  {
+    "id": "major_11",
+    "name": "Justice",
+    "arcana": "Major",
+    "number": 11,
+    "image": "tarot/11_Justice.jpg"
+  },
+  {
+    "id": "major_12",
+    "name": "The Hanged Man",
+    "arcana": "Major",
+    "number": 12,
+    "image": "tarot/12_Hanged_Man.jpg"
+  },
+  {
+    "id": "major_13",
+    "name": "Death",
+    "arcana": "Major",
+    "number": 13,
+    "image": "tarot/13_Death.jpg"
+  },
+  {
+    "id": "major_15",
+    "name": "The Devil",
+    "arcana": "Major",
+    "number": 15,
+    "image": "tarot/15_Devil.jpg"
+  },
+  {
+    "id": "major_16",
+    "name": "The Tower",
+    "arcana": "Major",
+    "number": 16,
+    "image": "tarot/16_Tower.jpg"
+  },
+  {
+    "id": "major_17",
+    "name": "The Star",
+    "arcana": "Major",
+    "number": 17,
+    "image": "tarot/17_Star.jpg"
+  },
+  {
+    "id": "major_18",
+    "name": "The Moon",
+    "arcana": "Major",
+    "number": 18,
+    "image": "tarot/18_Moon.jpg"
+  },
+  {
+    "id": "major_19",
+    "name": "The Sun",
+    "arcana": "Major",
+    "number": 19,
+    "image": "tarot/19_Sun.jpg"
+  },
+  {
+    "id": "major_20",
+    "name": "Judgement",
+    "arcana": "Major",
+    "number": 20,
+    "image": "tarot/20_Judgement.jpg"
+  },
+  {
+    "id": "major_21",
+    "name": "The World",
+    "arcana": "Major",
+    "number": 21,
+    "image": "tarot/21_World.jpg"
   }
 ]
