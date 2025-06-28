@@ -107,6 +107,11 @@ document.getElementById('load-btn').addEventListener('click', () => {
               });
               // ドラッグ＆ドロップ
               let dragOffsetX, dragOffsetY;
+              let isTouchDragging = false;
+              let touchStartX, touchStartY;
+              let cardStartLeft, cardStartTop;
+
+              // --- PC用ドラッグ ---
               cardDiv.addEventListener('dragstart', (e) => {
                 const cardRect = cardDiv.getBoundingClientRect();
                 dragOffsetX = e.clientX - cardRect.left;
@@ -121,6 +126,64 @@ document.getElementById('load-btn').addEventListener('click', () => {
                 newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
                 cardDiv.style.left = newLeft + 'px';
                 cardDiv.style.top = newTop + 'px';
+              });
+
+              // --- スマホ用タッチ長押しドラッグ ---
+              cardDiv.addEventListener('touchstart', (e) => {
+                if (e.touches.length !== 1) return;
+                isTouchDragging = false;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                cardStartLeft = parseInt(cardDiv.style.left);
+                cardStartTop = parseInt(cardDiv.style.top);
+                // 長押し判定
+                cardDiv.touchHoldTimeout = setTimeout(() => {
+                  isTouchDragging = true;
+                  cardDiv.style.opacity = '0.7';
+                  // 長押しでドラッグ開始時のみスクロール抑止
+                  document.body.style.overflow = 'hidden';
+                }, 300); // 0.3秒長押しでドラッグ開始
+              }, { passive: true });
+              cardDiv.addEventListener('touchmove', (e) => {
+                if (!isTouchDragging) return;
+                e.preventDefault();
+                const moveX = e.touches[0].clientX - touchStartX;
+                const moveY = e.touches[0].clientY - touchStartY;
+                let newLeft = cardStartLeft + moveX;
+                let newTop = cardStartTop + moveY;
+                // 配置エリア外に出せないよう制限
+                newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
+                newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
+                cardDiv.style.left = newLeft + 'px';
+                cardDiv.style.top = newTop + 'px';
+              }, { passive: false });
+              cardDiv.addEventListener('touchend', (e) => {
+                clearTimeout(cardDiv.touchHoldTimeout);
+                if (isTouchDragging) {
+                  cardDiv.style.opacity = '';
+                  isTouchDragging = false;
+                  document.body.style.overflow = '';
+                } else {
+                  // ドラッグでなければタップ扱い: 表裏切替を発火
+                  // img.click() だと click/touchend 両方で2回反応するため、
+                  // タッチ端末では click イベントを除外する
+                  if (!cardDiv._touchHandled) {
+                    cardDiv._touchHandled = true;
+                    setTimeout(() => { cardDiv._touchHandled = false; }, 400); // 連続タップ防止
+                    if (img.src.includes('tarot_back.jpg')) {
+                      img.src = 'assets/' + card.image;
+                      img.alt = card.name;
+                      name.style.display = 'block';
+                      if (!upright) cardDiv.classList.add('reverse');
+                      else cardDiv.classList.remove('reverse');
+                    } else {
+                      img.src = 'assets/tarot/tarot_back.jpg';
+                      img.alt = '裏面';
+                      name.style.display = 'none';
+                      cardDiv.classList.remove('reverse');
+                    }
+                  }
+                }
               });
               spreadArea.appendChild(cardDiv);
             });
@@ -310,6 +373,11 @@ function renderTarot() {
           });
           // ドラッグ＆ドロップ
           let dragOffsetX, dragOffsetY;
+          let isTouchDragging = false;
+          let touchStartX, touchStartY;
+          let cardStartLeft, cardStartTop;
+
+          // --- PC用ドラッグ ---
           cardDiv.addEventListener('dragstart', (e) => {
             const cardRect = cardDiv.getBoundingClientRect();
             dragOffsetX = e.clientX - cardRect.left;
@@ -324,6 +392,64 @@ function renderTarot() {
             newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
             cardDiv.style.left = newLeft + 'px';
             cardDiv.style.top = newTop + 'px';
+          });
+
+          // --- スマホ用タッチ長押しドラッグ ---
+          cardDiv.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            isTouchDragging = false;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            cardStartLeft = parseInt(cardDiv.style.left);
+            cardStartTop = parseInt(cardDiv.style.top);
+            // 長押し判定
+            cardDiv.touchHoldTimeout = setTimeout(() => {
+              isTouchDragging = true;
+              cardDiv.style.opacity = '0.7';
+              // 長押しでドラッグ開始時のみスクロール抑止
+              document.body.style.overflow = 'hidden';
+            }, 300); // 0.3秒長押しでドラッグ開始
+          }, { passive: true });
+          cardDiv.addEventListener('touchmove', (e) => {
+            if (!isTouchDragging) return;
+            e.preventDefault();
+            const moveX = e.touches[0].clientX - touchStartX;
+            const moveY = e.touches[0].clientY - touchStartY;
+            let newLeft = cardStartLeft + moveX;
+            let newTop = cardStartTop + moveY;
+            // 配置エリア外に出せないよう制限
+            newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
+            cardDiv.style.left = newLeft + 'px';
+            cardDiv.style.top = newTop + 'px';
+          }, { passive: false });
+          cardDiv.addEventListener('touchend', (e) => {
+            clearTimeout(cardDiv.touchHoldTimeout);
+            if (isTouchDragging) {
+              cardDiv.style.opacity = '';
+              isTouchDragging = false;
+              document.body.style.overflow = '';
+            } else {
+              // ドラッグでなければタップ扱い: 表裏切替を発火
+              // img.click() だと click/touchend 両方で2回反応するため、
+              // タッチ端末では click イベントを除外する
+              if (!cardDiv._touchHandled) {
+                cardDiv._touchHandled = true;
+                setTimeout(() => { cardDiv._touchHandled = false; }, 400); // 連続タップ防止
+                if (img.src.includes('tarot_back.jpg')) {
+                  img.src = 'assets/' + card.image;
+                  img.alt = card.name;
+                  name.style.display = 'block';
+                  if (!upright) cardDiv.classList.add('reverse');
+                  else cardDiv.classList.remove('reverse');
+                } else {
+                  img.src = 'assets/tarot/tarot_back.jpg';
+                  img.alt = '裏面';
+                  name.style.display = 'none';
+                  cardDiv.classList.remove('reverse');
+                }
+              }
+            }
           });
           cardIdCounter++;
           drawIndex++;
@@ -385,6 +511,11 @@ function renderTarot() {
           });
           // ドラッグ＆ドロップ
           let dragOffsetX, dragOffsetY;
+          let isTouchDragging = false;
+          let touchStartX, touchStartY;
+          let cardStartLeft, cardStartTop;
+
+          // --- PC用ドラッグ ---
           cardDiv.addEventListener('dragstart', (e) => {
             const cardRect = cardDiv.getBoundingClientRect();
             dragOffsetX = e.clientX - cardRect.left;
@@ -399,6 +530,64 @@ function renderTarot() {
             newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
             cardDiv.style.left = newLeft + 'px';
             cardDiv.style.top = newTop + 'px';
+          });
+
+          // --- スマホ用タッチ長押しドラッグ ---
+          cardDiv.addEventListener('touchstart', (e) => {
+            if (e.touches.length !== 1) return;
+            isTouchDragging = false;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            cardStartLeft = parseInt(cardDiv.style.left);
+            cardStartTop = parseInt(cardDiv.style.top);
+            // 長押し判定
+            cardDiv.touchHoldTimeout = setTimeout(() => {
+              isTouchDragging = true;
+              cardDiv.style.opacity = '0.7';
+              // 長押しでドラッグ開始時のみスクロール抑止
+              document.body.style.overflow = 'hidden';
+            }, 300); // 0.3秒長押しでドラッグ開始
+          }, { passive: true });
+          cardDiv.addEventListener('touchmove', (e) => {
+            if (!isTouchDragging) return;
+            e.preventDefault();
+            const moveX = e.touches[0].clientX - touchStartX;
+            const moveY = e.touches[0].clientY - touchStartY;
+            let newLeft = cardStartLeft + moveX;
+            let newTop = cardStartTop + moveY;
+            // 配置エリア外に出せないよう制限
+            newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
+            newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
+            cardDiv.style.left = newLeft + 'px';
+            cardDiv.style.top = newTop + 'px';
+          }, { passive: false });
+          cardDiv.addEventListener('touchend', (e) => {
+            clearTimeout(cardDiv.touchHoldTimeout);
+            if (isTouchDragging) {
+              cardDiv.style.opacity = '';
+              isTouchDragging = false;
+              document.body.style.overflow = '';
+            } else {
+              // ドラッグでなければタップ扱い: 表裏切替を発火
+              // img.click() だと click/touchend 両方で2回反応するため、
+              // タッチ端末では click イベントを除外する
+              if (!cardDiv._touchHandled) {
+                cardDiv._touchHandled = true;
+                setTimeout(() => { cardDiv._touchHandled = false; }, 400); // 連続タップ防止
+                if (img.src.includes('tarot_back.jpg')) {
+                  img.src = 'assets/' + card.image;
+                  img.alt = card.name;
+                  name.style.display = 'block';
+                  if (!upright) cardDiv.classList.add('reverse');
+                  else cardDiv.classList.remove('reverse');
+                } else {
+                  img.src = 'assets/tarot/tarot_back.jpg';
+                  img.alt = '裏面';
+                  name.style.display = 'none';
+                  cardDiv.classList.remove('reverse');
+                }
+              }
+            }
           });
           cardIdCounter++;
           drawIndex++;
