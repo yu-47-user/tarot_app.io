@@ -4,16 +4,44 @@ body {
   margin: 0;
   padding: 0;
 }
+#mode-area {
+  margin-bottom: 12px;
+}
+#deck-area {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 12px;
+  min-height: 210px;
+}
 #spread-area {
-  min-height: 300px;
-  margin: 20px auto;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #ccc;
-  max-width: 700px;
-  padding: 20px;
   position: relative;
-  height: 420px;
+  width: 100%;
+  max-width: none; /* 最大幅の制限を解除 */
+  min-width: 0;
+  min-height: 700px; /* カード縦3.5枚分 */
+  height: 700px;
+  background: #f8f8f8;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  margin: 0 auto 16px auto;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+h1 {
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 2rem;
+  letter-spacing: 0.1em;
+}
+.tarot-deck {
+  margin-left: 24px;
+}
+.tarot-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  border-radius: 8px;
+  background: #fff;
+  padding: 4px;
 }
 #note {
   width: 90%;
@@ -36,27 +64,4 @@ button {
 }
 button:hover {
   background: #357ab8;
-}
-.tarot-card img {
-  border-radius: 8px;
-  box-shadow: 0 2px 8px #bbb;
-  background: #fff;
-}
-.tarot-card {
-  display: block;
-  position: absolute;
-  text-align: center;
-}
-#deck-area {
-  position: absolute;
-  left: 30px;
-  top: 40px;
-  width: 140px;
-  height: 220px;
-  z-index: 10;
-}
-.tarot-deck {
-  display: block;
-  margin: 0 auto;
-  text-align: center;
 }
