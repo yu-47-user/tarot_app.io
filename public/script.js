@@ -76,7 +76,6 @@ document.getElementById('load-btn').addEventListener('click', () => {
               img.style.width = '120px';
               img.style.height = '200px';
               img.style.cursor = 'pointer';
-              img.style.transform = card.upright ? 'none' : 'rotate(180deg)';
               // カード名
               const name = document.createElement('div');
               name.textContent = card.name + (card.upright ? '（正位置）' : '（逆位置）');
@@ -84,31 +83,35 @@ document.getElementById('load-btn').addEventListener('click', () => {
               name.style.display = card.isFace ? 'block' : 'none';
               cardDiv.appendChild(img);
               cardDiv.appendChild(name);
-              spreadArea.appendChild(cardDiv);
+              // ★正逆位置の回転はimgではなくcardDivに適用
+              cardDiv.style.transform = 'none';
               // タップで表裏切替
               img.addEventListener('click', () => {
                 if (img.src.includes('tarot_back.jpg')) {
                   img.src = 'assets/' + cardInfo.image;
                   img.alt = card.name;
                   name.style.display = 'block';
-                  img.style.transform = card.upright ? 'none' : 'rotate(180deg)';
+                  if (!upright) cardDiv.classList.add('reverse');
+                  else cardDiv.classList.remove('reverse');
                 } else {
                   img.src = 'assets/tarot/tarot_back.jpg';
                   img.alt = '裏面';
                   name.style.display = 'none';
-                  img.style.transform = 'none';
+                  cardDiv.classList.remove('reverse');
                 }
               });
               // ドラッグ＆ドロップ
-              let offsetX, offsetY;
+              let dragOffsetX, dragOffsetY;
               cardDiv.addEventListener('dragstart', (e) => {
-                offsetX = e.offsetX;
-                offsetY = e.offsetY;
+                const cardRect = cardDiv.getBoundingClientRect();
+                dragOffsetX = e.clientX - cardRect.left;
+                dragOffsetY = e.clientY - cardRect.top;
               });
               cardDiv.addEventListener('dragend', (e) => {
                 const rect = spreadArea.getBoundingClientRect();
-                let newLeft = e.clientX - rect.left - offsetX;
-                let newTop = e.clientY - rect.top - offsetY;
+                let newLeft = e.clientX - rect.left - dragOffsetX;
+                let newTop = e.clientY - rect.top - dragOffsetY;
+                // 配置エリア外に出せないよう制限
                 newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
                 newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
                 cardDiv.style.left = newLeft + 'px';
@@ -199,6 +202,8 @@ function renderTarot() {
       const deckDiv = document.createElement('div');
       deckDiv.className = 'tarot-deck';
       deckDiv.style.cursor = 'pointer';
+      deckDiv.style.transform = 'none'; // 山札にはtransformを絶対に適用しない
+      // 画像
       const deckImg = document.createElement('img');
       deckImg.src = 'assets/tarot/tarot_back.jpg';
       deckImg.alt = '山札';
@@ -209,6 +214,7 @@ function renderTarot() {
       if (freeMode) {
         // --- 自由配置モード ---
         deckDiv.addEventListener('click', () => {
+          console.log('山札クリック', drawIndex, shuffled.length);
           if (drawIndex >= shuffled.length) return;
           const card = shuffled[drawIndex];
           // 正位置・逆位置をランダム決定
@@ -228,6 +234,7 @@ function renderTarot() {
           cardDiv.style.textAlign = 'center';
           cardDiv.setAttribute('draggable', 'true');
           cardDiv.dataset.index = drawIndex;
+          cardDiv.style.transform = 'none';
           // 画像（初期は裏面）
           const img = document.createElement('img');
           img.src = 'assets/tarot/tarot_back.jpg';
@@ -242,32 +249,37 @@ function renderTarot() {
           name.style.display = 'none';
           cardDiv.appendChild(img);
           cardDiv.appendChild(name);
+          cardDiv.style.transform = 'none';
+          // デバッグ用ログ
+          console.log('カード生成', {left, top, cardDiv, spreadArea});
           spreadArea.appendChild(cardDiv);
+          // --- ここからイベント登録を復活 ---
           // タップで表裏切替
           img.addEventListener('click', () => {
             if (img.src.includes('tarot_back.jpg')) {
               img.src = 'assets/' + card.image;
               img.alt = card.name;
               name.style.display = 'block';
-              // 逆位置なら180度回転
-              img.style.transform = upright ? 'none' : 'rotate(180deg)';
+              if (!upright) cardDiv.classList.add('reverse');
+              else cardDiv.classList.remove('reverse');
             } else {
               img.src = 'assets/tarot/tarot_back.jpg';
               img.alt = '裏面';
               name.style.display = 'none';
-              img.style.transform = 'none';
+              cardDiv.classList.remove('reverse');
             }
           });
           // ドラッグ＆ドロップ
-          let offsetX, offsetY;
+          let dragOffsetX, dragOffsetY;
           cardDiv.addEventListener('dragstart', (e) => {
-            offsetX = e.offsetX;
-            offsetY = e.offsetY;
+            const cardRect = cardDiv.getBoundingClientRect();
+            dragOffsetX = e.clientX - cardRect.left;
+            dragOffsetY = e.clientY - cardRect.top;
           });
           cardDiv.addEventListener('dragend', (e) => {
             const rect = spreadArea.getBoundingClientRect();
-            let newLeft = e.clientX - rect.left - offsetX;
-            let newTop = e.clientY - rect.top - offsetY;
+            let newLeft = e.clientX - rect.left - dragOffsetX;
+            let newTop = e.clientY - rect.top - dragOffsetY;
             // 配置エリア外に出せないよう制限
             newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
             newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
@@ -295,6 +307,7 @@ function renderTarot() {
           cardDiv.style.textAlign = 'center';
           cardDiv.setAttribute('draggable', 'true');
           cardDiv.dataset.index = drawIndex;
+          cardDiv.style.transform = 'none'; // カード生成時は必ず初期化
           // 画像（初期は裏面）
           const img = document.createElement('img');
           img.src = 'assets/tarot/tarot_back.jpg';
@@ -309,19 +322,18 @@ function renderTarot() {
           name.style.display = 'none';
           cardDiv.appendChild(img);
           cardDiv.appendChild(name);
-          spreadArea.appendChild(cardDiv);
-          // タップで表裏切替
+          cardDiv.style.transform = 'none';
           img.addEventListener('click', () => {
             if (img.src.includes('tarot_back.jpg')) {
               img.src = 'assets/' + card.image;
               img.alt = card.name;
               name.style.display = 'block';
-              img.style.transform = upright ? 'none' : 'rotate(180deg)';
+              cardDiv.style.transform = upright ? 'none' : 'rotate(180deg)';
             } else {
               img.src = 'assets/tarot/tarot_back.jpg';
               img.alt = '裏面';
               name.style.display = 'none';
-              img.style.transform = 'none';
+              cardDiv.style.transform = 'none';
             }
           });
           // ドラッグ＆ドロップ

@@ -3,6 +3,8 @@ body {
   background: #f8f8f8;
   margin: 0;
   padding: 0;
+  width: 100vw;
+  overflow-x: auto;
 }
 #mode-area {
   margin-bottom: 12px;
@@ -16,11 +18,12 @@ body {
 }
 #spread-area {
   position: relative;
-  width: 100%;
-  max-width: none; /* 最大幅の制限を解除 */
+  width: 100vw;
+  left: 0;
+  right: 0;
   min-width: 0;
-  min-height: 700px; /* カード縦3.5枚分 */
-  height: 700px;
+  min-height: 900px; /* カード縦4.5枚分(200px*4.5) */
+  height: 900px;
   background: #f8f8f8;
   border-radius: 12px;
   border: 1px solid #ccc;
@@ -42,6 +45,18 @@ h1 {
   border-radius: 8px;
   background: #fff;
   padding: 4px;
+  /* 逆位置時のテキスト反転を防ぐ */
+}
+.tarot-card.reverse img {
+  transform: rotate(180deg);
+}
+.tarot-card.reverse div {
+  transform: none;
+}
+.tarot-card img {
+  display: block;
+  margin: 0 auto;
+  transform-origin: center center;
 }
 #note {
   width: 90%;
