@@ -8,17 +8,14 @@ document.getElementById('save-btn').addEventListener('click', () => {
   const cards = Array.from(cardDivs).map(cardDiv => {
     const img = cardDiv.querySelector('img');
     const nameDiv = cardDiv.querySelector('div');
-    // 正逆位置はカード名末尾の（正位置）（逆位置）で判定
     const nameText = nameDiv.textContent;
     const upright = nameText.includes('正位置');
-    // 配置座標
     const left = parseInt(cardDiv.style.left);
     const top = parseInt(cardDiv.style.top);
-    // 表裏状態
     const isFace = !img.src.includes('tarot_back.jpg');
-    // カード名本体
-    const cardName = nameText.replace(/（正位置）|（逆位置）/g, '').replace(/\(.+\)$/,'').trim();
-    return { name: cardName, left, top, upright, isFace };
+    const cardName = nameText.replace(/：\d+/, '').replace(/（正位置）|（逆位置）/g, '').replace(/\(.+\)$/,'').trim();
+    const cardId = cardDiv.dataset.cardId ? parseInt(cardDiv.dataset.cardId) : null;
+    return { id: cardId, name: cardName, left, top, upright, isFace };
   });
   // メモ欄
   const note = document.getElementById('note').value;
@@ -55,11 +52,10 @@ document.getElementById('load-btn').addEventListener('click', () => {
         // カード配置復元
         const spreadArea = document.getElementById('spread-area');
         spreadArea.innerHTML = '';
-        data.cards.forEach(card => {
-          // deck.jsonから画像パスを取得
-          fetch('data/deck.json')
-            .then(res => res.json())
-            .then(deck => {
+        fetch('data/deck.json')
+          .then(res => res.json())
+          .then(deck => {
+            data.cards.forEach(card => {
               const cardInfo = deck.find(d => d.name === card.name);
               if (!cardInfo) return;
               const cardDiv = document.createElement('div');
@@ -69,6 +65,7 @@ document.getElementById('load-btn').addEventListener('click', () => {
               cardDiv.style.top = card.top + 'px';
               cardDiv.style.textAlign = 'center';
               cardDiv.setAttribute('draggable', 'true');
+              if (card.id) cardDiv.dataset.cardId = card.id;
               // 画像
               const img = document.createElement('img');
               img.src = card.isFace ? ('assets/' + cardInfo.image) : 'assets/tarot/tarot_back.jpg';
@@ -77,21 +74,29 @@ document.getElementById('load-btn').addEventListener('click', () => {
               img.style.height = '200px';
               img.style.cursor = 'pointer';
               // カード名
+              let nameText = card.name;
+              if (typeof card.id !== 'undefined') nameText += `：${card.id}`;
+              // 正位置・逆位置表記は表示しない
               const name = document.createElement('div');
-              name.textContent = card.name + (card.upright ? '（正位置）' : '（逆位置）');
+              name.textContent = nameText;
               name.style.marginTop = '8px';
               name.style.display = card.isFace ? 'block' : 'none';
               cardDiv.appendChild(img);
               cardDiv.appendChild(name);
-              // ★正逆位置の回転はimgではなくcardDivに適用
               cardDiv.style.transform = 'none';
+              // 正逆位置クラスを正しく付与
+              if (!card.upright && card.isFace) {
+                cardDiv.classList.add('reverse');
+              } else {
+                cardDiv.classList.remove('reverse');
+              }
               // タップで表裏切替
               img.addEventListener('click', () => {
                 if (img.src.includes('tarot_back.jpg')) {
                   img.src = 'assets/' + cardInfo.image;
                   img.alt = card.name;
                   name.style.display = 'block';
-                  if (!upright) cardDiv.classList.add('reverse');
+                  if (!card.upright) cardDiv.classList.add('reverse');
                   else cardDiv.classList.remove('reverse');
                 } else {
                   img.src = 'assets/tarot/tarot_back.jpg';
@@ -117,8 +122,9 @@ document.getElementById('load-btn').addEventListener('click', () => {
                 cardDiv.style.left = newLeft + 'px';
                 cardDiv.style.top = newTop + 'px';
               });
+              spreadArea.appendChild(cardDiv);
             });
-        });
+          });
       } catch (err) {
         alert('読込失敗: ファイル形式が不正です');
       }
@@ -155,6 +161,8 @@ modeArea.appendChild(modeBtn);
 document.body.insertBefore(modeArea, document.getElementById('spread-area'));
 
 let freeMode = true; // 初期は自由配置
+let cardIdCounter = 1; // 1から順にIDを振る
+let drawIndex = 0; // 山札から引いた枚数をグローバルで管理
 
 function updateModeUI() {
   modeLabel.textContent = freeMode ? 'モード: 自由配置' : 'モード: スプレッド';
@@ -165,6 +173,38 @@ updateModeUI();
 modeBtn.onclick = () => {
   freeMode = !freeMode;
   updateModeUI();
+  cardIdCounter = 1; // モード切替時にIDリセット
+  renderTarot();
+};
+
+// --- デッキ種別切替UI ---
+const deckModeArea = document.createElement('div');
+deckModeArea.id = 'deck-mode-area';
+deckModeArea.style.margin = '10px 0';
+deckModeArea.style.textAlign = 'center';
+const deckModeLabel = document.createElement('span');
+deckModeLabel.id = 'deck-mode-label';
+deckModeLabel.style.fontWeight = 'bold';
+deckModeLabel.style.marginRight = '16px';
+const deckModeBtn = document.createElement('button');
+deckModeBtn.id = 'deck-mode-btn';
+deckModeBtn.style.marginLeft = '8px';
+deckModeArea.appendChild(deckModeLabel);
+deckModeArea.appendChild(deckModeBtn);
+document.body.insertBefore(deckModeArea, document.getElementById('mode-area'));
+
+let useMajorOnly = true; // true:大アルカナのみ, false:大+小
+
+function updateDeckModeUI() {
+  deckModeLabel.textContent = useMajorOnly ? 'デッキ: 大アルカナのみ' : 'デッキ: 大＋小アルカナ';
+  deckModeBtn.textContent = useMajorOnly ? '大＋小アルカナに切替' : '大アルカナのみに切替';
+}
+updateDeckModeUI();
+
+deckModeBtn.onclick = () => {
+  useMajorOnly = !useMajorOnly;
+  updateDeckModeUI();
+  cardIdCounter = 1; // デッキ種別切替時にIDリセット
   renderTarot();
 };
 
@@ -196,8 +236,10 @@ function renderTarot() {
   fetch('data/deck.json')
     .then(res => res.json())
     .then(deck => {
-      const shuffled = shuffle([...deck]);
-      let drawIndex = 0;
+      // デッキ種別でフィルタ
+      const filteredDeck = useMajorOnly ? deck.filter(c => c.arcana === 'Major') : deck;
+      const shuffled = shuffle([...filteredDeck]);
+      drawIndex = 0; // デッキ描画時にリセット
       // 山札（裏面）をdeck-areaに表示
       const deckDiv = document.createElement('div');
       deckDiv.className = 'tarot-deck';
@@ -214,7 +256,6 @@ function renderTarot() {
       if (freeMode) {
         // --- 自由配置モード ---
         deckDiv.addEventListener('click', () => {
-          console.log('山札クリック', drawIndex, shuffled.length);
           if (drawIndex >= shuffled.length) return;
           const card = shuffled[drawIndex];
           // 正位置・逆位置をランダム決定
@@ -234,6 +275,7 @@ function renderTarot() {
           cardDiv.style.textAlign = 'center';
           cardDiv.setAttribute('draggable', 'true');
           cardDiv.dataset.index = drawIndex;
+          cardDiv.dataset.cardId = cardIdCounter; // IDを付与
           cardDiv.style.transform = 'none';
           // 画像（初期は裏面）
           const img = document.createElement('img');
@@ -244,16 +286,13 @@ function renderTarot() {
           img.style.cursor = 'pointer';
           // カード名（初期は非表示）
           const name = document.createElement('div');
-          name.textContent = card.name + (upright ? '（正位置）' : '（逆位置）');
+          name.textContent = `${card.name}：${cardIdCounter}`;
           name.style.marginTop = '8px';
           name.style.display = 'none';
           cardDiv.appendChild(img);
           cardDiv.appendChild(name);
           cardDiv.style.transform = 'none';
-          // デバッグ用ログ
-          console.log('カード生成', {left, top, cardDiv, spreadArea});
           spreadArea.appendChild(cardDiv);
-          // --- ここからイベント登録を復活 ---
           // タップで表裏切替
           img.addEventListener('click', () => {
             if (img.src.includes('tarot_back.jpg')) {
@@ -286,6 +325,7 @@ function renderTarot() {
             cardDiv.style.left = newLeft + 'px';
             cardDiv.style.top = newTop + 'px';
           });
+          cardIdCounter++;
           drawIndex++;
           if (drawIndex >= shuffled.length) {
             deckArea.innerHTML = '';
@@ -294,20 +334,24 @@ function renderTarot() {
       } else {
         // --- スプレッドモード ---
         deckDiv.addEventListener('click', () => {
-          if (drawIndex >= spread.positions.length) return;
+          if (drawIndex >= spread.positions.length || drawIndex >= shuffled.length) return;
           const card = shuffled[drawIndex];
-          const pos = spread.positions[drawIndex];
-          // 正位置・逆位置をランダム決定
+          // --- 自由配置モードと同じ描画・情報付与ルールで ---
           const upright = Math.random() < 0.5;
+          // 配置位置はスプレッド定義
+          const pos = spread.positions[drawIndex];
+          const left = pos.x;
+          const top = pos.y;
           const cardDiv = document.createElement('div');
           cardDiv.className = 'tarot-card';
           cardDiv.style.position = 'absolute';
-          cardDiv.style.left = pos.x + 'px';
-          cardDiv.style.top = pos.y + 'px';
+          cardDiv.style.left = left + 'px';
+          cardDiv.style.top = top + 'px';
           cardDiv.style.textAlign = 'center';
           cardDiv.setAttribute('draggable', 'true');
           cardDiv.dataset.index = drawIndex;
-          cardDiv.style.transform = 'none'; // カード生成時は必ず初期化
+          cardDiv.dataset.cardId = cardIdCounter; // IDを付与
+          cardDiv.style.transform = 'none';
           // 画像（初期は裏面）
           const img = document.createElement('img');
           img.src = 'assets/tarot/tarot_back.jpg';
@@ -317,41 +361,46 @@ function renderTarot() {
           img.style.cursor = 'pointer';
           // カード名（初期は非表示）
           const name = document.createElement('div');
-          name.textContent = card.name + ' (' + pos.label + ')' + (upright ? '（正位置）' : '（逆位置）');
+          name.textContent = `${card.name}：${cardIdCounter} (${pos.label})`;
           name.style.marginTop = '8px';
           name.style.display = 'none';
           cardDiv.appendChild(img);
           cardDiv.appendChild(name);
           cardDiv.style.transform = 'none';
+          spreadArea.appendChild(cardDiv);
+          // タップで表裏切替
           img.addEventListener('click', () => {
             if (img.src.includes('tarot_back.jpg')) {
               img.src = 'assets/' + card.image;
               img.alt = card.name;
               name.style.display = 'block';
-              cardDiv.style.transform = upright ? 'none' : 'rotate(180deg)';
+              if (!upright) cardDiv.classList.add('reverse');
+              else cardDiv.classList.remove('reverse');
             } else {
               img.src = 'assets/tarot/tarot_back.jpg';
               img.alt = '裏面';
               name.style.display = 'none';
-              cardDiv.style.transform = 'none';
+              cardDiv.classList.remove('reverse');
             }
           });
           // ドラッグ＆ドロップ
-          let offsetX, offsetY;
+          let dragOffsetX, dragOffsetY;
           cardDiv.addEventListener('dragstart', (e) => {
-            offsetX = e.offsetX;
-            offsetY = e.offsetY;
+            const cardRect = cardDiv.getBoundingClientRect();
+            dragOffsetX = e.clientX - cardRect.left;
+            dragOffsetY = e.clientY - cardRect.top;
           });
           cardDiv.addEventListener('dragend', (e) => {
             const rect = spreadArea.getBoundingClientRect();
-            let newLeft = e.clientX - rect.left - offsetX;
-            let newTop = e.clientY - rect.top - offsetY;
+            let newLeft = e.clientX - rect.left - dragOffsetX;
+            let newTop = e.clientY - rect.top - dragOffsetY;
             // 配置エリア外に出せないよう制限
             newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
             newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
             cardDiv.style.left = newLeft + 'px';
             cardDiv.style.top = newTop + 'px';
           });
+          cardIdCounter++;
           drawIndex++;
           if (drawIndex >= spread.positions.length) {
             deckArea.innerHTML = '';
@@ -375,6 +424,7 @@ resetBtn.addEventListener('click', () => {
   document.getElementById('spread-area').innerHTML = '';
   document.getElementById('deck-area').innerHTML = '';
   document.getElementById('note').value = '';
+  cardIdCounter = 1; // 初期化時にIDリセット
   // 山札・UIを再描画
   renderTarot();
 });

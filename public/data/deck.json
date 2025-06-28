@@ -145,5 +145,437 @@
     "arcana": "Major",
     "number": 21,
     "image": "tarot/21_World.jpg"
+  },
+  {
+    "id": "minor_wands_1",
+    "name": "Ace of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 1,
+    "image": "tarot/minor/minor_wands_1.jpg"
+  },
+  {
+    "id": "minor_wands_2",
+    "name": "Two of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 2,
+    "image": "tarot/minor/minor_wands_2.jpg"
+  },
+  {
+    "id": "minor_wands_3",
+    "name": "Three of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 3,
+    "image": "tarot/minor/minor_wands_3.jpg"
+  },
+  {
+    "id": "minor_wands_4",
+    "name": "Four of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 4,
+    "image": "tarot/minor/minor_wands_4.jpg"
+  },
+  {
+    "id": "minor_wands_5",
+    "name": "Five of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 5,
+    "image": "tarot/minor/minor_wands_5.jpg"
+  },
+  {
+    "id": "minor_wands_6",
+    "name": "Six of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 6,
+    "image": "tarot/minor/minor_wands_6.jpg"
+  },
+  {
+    "id": "minor_wands_7",
+    "name": "Seven of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 7,
+    "image": "tarot/minor/minor_wands_7.jpg"
+  },
+  {
+    "id": "minor_wands_8",
+    "name": "Eight of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 8,
+    "image": "tarot/minor/minor_wands_8.jpg"
+  },
+  {
+    "id": "minor_wands_9",
+    "name": "Nine of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 9,
+    "image": "tarot/minor/minor_wands_9.jpg"
+  },
+  {
+    "id": "minor_wands_10",
+    "name": "Ten of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "number": 10,
+    "image": "tarot/minor/minor_wands_10.jpg"
+  },
+  {
+    "id": "minor_wands_page",
+    "name": "Page of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "image": "tarot/minor/minor_wands_page.jpg"
+  },
+  {
+    "id": "minor_wands_knight",
+    "name": "Knight of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "image": "tarot/minor/minor_wands_knight.jpg"
+  },
+  {
+    "id": "minor_wands_queen",
+    "name": "Queen of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "image": "tarot/minor/minor_wands_queen.jpg"
+  },
+  {
+    "id": "minor_wands_king",
+    "name": "King of Wands",
+    "arcana": "Minor",
+    "suit": "Wands",
+    "image": "tarot/minor/minor_wands_king.jpg"
+  },
+  {
+    "id": "minor_cups_1",
+    "name": "Ace of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 1,
+    "image": "tarot/minor/minor_cups_1.jpg"
+  },
+  {
+    "id": "minor_cups_2",
+    "name": "Two of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 2,
+    "image": "tarot/minor/minor_cups_2.jpg"
+  },
+  {
+    "id": "minor_cups_3",
+    "name": "Three of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 3,
+    "image": "tarot/minor/minor_cups_3.jpg"
+  },
+  {
+    "id": "minor_cups_4",
+    "name": "Four of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 4,
+    "image": "tarot/minor/minor_cups_4.jpg"
+  },
+  {
+    "id": "minor_cups_5",
+    "name": "Five of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 5,
+    "image": "tarot/minor/minor_cups_5.jpg"
+  },
+  {
+    "id": "minor_cups_6",
+    "name": "Six of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 6,
+    "image": "tarot/minor/minor_cups_6.jpg"
+  },
+  {
+    "id": "minor_cups_7",
+    "name": "Seven of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 7,
+    "image": "tarot/minor/minor_cups_7.jpg"
+  },
+  {
+    "id": "minor_cups_8",
+    "name": "Eight of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 8,
+    "image": "tarot/minor/minor_cups_8.jpg"
+  },
+  {
+    "id": "minor_cups_9",
+    "name": "Nine of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 9,
+    "image": "tarot/minor/minor_cups_9.jpg"
+  },
+  {
+    "id": "minor_cups_10",
+    "name": "Ten of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "number": 10,
+    "image": "tarot/minor/minor_cups_10.jpg"
+  },
+  {
+    "id": "minor_cups_page",
+    "name": "Page of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "image": "tarot/minor/minor_cups_page.jpg"
+  },
+  {
+    "id": "minor_cups_knight",
+    "name": "Knight of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "image": "tarot/minor/minor_cups_knight.jpg"
+  },
+  {
+    "id": "minor_cups_queen",
+    "name": "Queen of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "image": "tarot/minor/minor_cups_queen.jpg"
+  },
+  {
+    "id": "minor_cups_king",
+    "name": "King of Cups",
+    "arcana": "Minor",
+    "suit": "Cups",
+    "image": "tarot/minor/minor_cups_king.jpg"
+  },
+  {
+    "id": "minor_swords_1",
+    "name": "Ace of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 1,
+    "image": "tarot/minor/minor_swords_1.jpg"
+  },
+  {
+    "id": "minor_swords_2",
+    "name": "Two of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 2,
+    "image": "tarot/minor/minor_swords_2.jpg"
+  },
+  {
+    "id": "minor_swords_3",
+    "name": "Three of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 3,
+    "image": "tarot/minor/minor_swords_3.jpg"
+  },
+  {
+    "id": "minor_swords_4",
+    "name": "Four of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 4,
+    "image": "tarot/minor/minor_swords_4.jpg"
+  },
+  {
+    "id": "minor_swords_5",
+    "name": "Five of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 5,
+    "image": "tarot/minor/minor_swords_5.jpg"
+  },
+  {
+    "id": "minor_swords_6",
+    "name": "Six of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 6,
+    "image": "tarot/minor/minor_swords_6.jpg"
+  },
+  {
+    "id": "minor_swords_7",
+    "name": "Seven of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 7,
+    "image": "tarot/minor/minor_swords_7.jpg"
+  },
+  {
+    "id": "minor_swords_8",
+    "name": "Eight of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 8,
+    "image": "tarot/minor/minor_swords_8.jpg"
+  },
+  {
+    "id": "minor_swords_9",
+    "name": "Nine of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 9,
+    "image": "tarot/minor/minor_swords_9.jpg"
+  },
+  {
+    "id": "minor_swords_10",
+    "name": "Ten of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "number": 10,
+    "image": "tarot/minor/minor_swords_10.jpg"
+  },
+  {
+    "id": "minor_swords_page",
+    "name": "Page of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "image": "tarot/minor/minor_swords_page.jpg"
+  },
+  {
+    "id": "minor_swords_knight",
+    "name": "Knight of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "image": "tarot/minor/minor_swords_knight.jpg"
+  },
+  {
+    "id": "minor_swords_queen",
+    "name": "Queen of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "image": "tarot/minor/minor_swords_queen.jpg"
+  },
+  {
+    "id": "minor_swords_king",
+    "name": "King of Swords",
+    "arcana": "Minor",
+    "suit": "Swords",
+    "image": "tarot/minor/minor_swords_king.jpg"
+  },
+  {
+    "id": "minor_pentacles_1",
+    "name": "Ace of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 1,
+    "image": "tarot/minor/minor_pentacles_1.jpg"
+  },
+  {
+    "id": "minor_pentacles_2",
+    "name": "Two of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 2,
+    "image": "tarot/minor/minor_pentacles_2.jpg"
+  },
+  {
+    "id": "minor_pentacles_3",
+    "name": "Three of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 3,
+    "image": "tarot/minor/minor_pentacles_3.jpg"
+  },
+  {
+    "id": "minor_pentacles_4",
+    "name": "Four of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 4,
+    "image": "tarot/minor/minor_pentacles_4.jpg"
+  },
+  {
+    "id": "minor_pentacles_5",
+    "name": "Five of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 5,
+    "image": "tarot/minor/minor_pentacles_5.jpg"
+  },
+  {
+    "id": "minor_pentacles_6",
+    "name": "Six of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 6,
+    "image": "tarot/minor/minor_pentacles_6.jpg"
+  },
+  {
+    "id": "minor_pentacles_7",
+    "name": "Seven of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 7,
+    "image": "tarot/minor/minor_pentacles_7.jpg"
+  },
+  {
+    "id": "minor_pentacles_8",
+    "name": "Eight of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 8,
+    "image": "tarot/minor/minor_pentacles_8.jpg"
+  },
+  {
+    "id": "minor_pentacles_9",
+    "name": "Nine of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 9,
+    "image": "tarot/minor/minor_pentacles_9.jpg"
+  },
+  {
+    "id": "minor_pentacles_10",
+    "name": "Ten of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "number": 10,
+    "image": "tarot/minor/minor_pentacles_10.jpg"
+  },
+  {
+    "id": "minor_pentacles_page",
+    "name": "Page of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "image": "tarot/minor/minor_pentacles_page.jpg"
+  },
+  {
+    "id": "minor_pentacles_knight",
+    "name": "Knight of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "image": "tarot/minor/minor_pentacles_knight.jpg"
+  },
+  {
+    "id": "minor_pentacles_queen",
+    "name": "Queen of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "image": "tarot/minor/minor_pentacles_queen.jpg"
+  },
+  {
+    "id": "minor_pentacles_king",
+    "name": "King of Pentacles",
+    "arcana": "Minor",
+    "suit": "Pentacles",
+    "image": "tarot/minor/minor_pentacles_king.jpg"
   }
 ]
