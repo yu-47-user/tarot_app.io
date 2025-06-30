@@ -357,7 +357,13 @@ function renderTarot() {
           cardDiv.style.transform = 'none';
           spreadArea.appendChild(cardDiv);
           // タップで表裏切替
-          img.addEventListener('click', () => {
+          let touchHandled = false;
+          img.addEventListener('click', (e) => {
+            if (touchHandled) {
+              // 直前のtouchendで処理済みならclickは無視
+              touchHandled = false;
+              return;
+            }
             if (img.src.includes('tarot_back.jpg')) {
               img.src = 'assets/' + card.image;
               img.alt = card.name;
@@ -430,24 +436,20 @@ function renderTarot() {
               isTouchDragging = false;
               document.body.style.overflow = '';
             } else {
-              // ドラッグでなければタップ扱い: 表裏切替を発火
-              // img.click() だと click/touchend 両方で2回反応するため、
-              // タッチ端末では click イベントを除外する
-              if (!cardDiv._touchHandled) {
-                cardDiv._touchHandled = true;
-                setTimeout(() => { cardDiv._touchHandled = false; }, 400); // 連続タップ防止
-                if (img.src.includes('tarot_back.jpg')) {
-                  img.src = 'assets/' + card.image;
-                  img.alt = card.name;
-                  name.style.display = 'block';
-                  if (!upright) cardDiv.classList.add('reverse');
-                  else cardDiv.classList.remove('reverse');
-                } else {
-                  img.src = 'assets/tarot/tarot_back.jpg';
-                  img.alt = '裏面';
-                  name.style.display = 'none';
-                  cardDiv.classList.remove('reverse');
-                }
+              // ドラッグでなければタップ扱い: 表裏切替を直接実行し、clickイベントは無視させる
+              touchHandled = true;
+              setTimeout(() => { touchHandled = false; }, 400); // 連続タップ防止
+              if (img.src.includes('tarot_back.jpg')) {
+                img.src = 'assets/' + card.image;
+                img.alt = card.name;
+                name.style.display = 'block';
+                if (!upright) cardDiv.classList.add('reverse');
+                else cardDiv.classList.remove('reverse');
+              } else {
+                img.src = 'assets/tarot/tarot_back.jpg';
+                img.alt = '裏面';
+                name.style.display = 'none';
+                cardDiv.classList.remove('reverse');
               }
             }
           });
