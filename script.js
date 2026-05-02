@@ -1,7 +1,9 @@
 const SAVE_VERSION = '2.0.0';
 const CARD_BACK_IMAGE = './assets/tarot/tarot_back.jpg';
 const TOUCH_HOLD_MS = 280;
-const CARD_ASPECT_RATIO = 1.68;
+const CARD_IMAGE_ASPECT_RATIO = 528 / 300;
+const CARD_META_HEIGHT = 54;
+const MOBILE_CARD_WIDTH = 142;
 
 const elements = {
   question: document.getElementById('question'),
@@ -279,6 +281,7 @@ function createCardElement(card) {
   image.className = 'reading-card__image';
   image.src = card.revealed ? card.image : CARD_BACK_IMAGE;
   image.alt = card.revealed ? `${card.nameJa} ${card.upright ? '正位置' : '逆位置'}` : '裏向きのカード';
+  image.draggable = false;
 
   const meta = document.createElement('div');
   meta.className = 'reading-card__meta';
@@ -348,6 +351,8 @@ function bindCardInteractions(cardElement, card) {
       }, TOUCH_HOLD_MS);
     }
   });
+  button.addEventListener('dragstart', event => event.preventDefault());
+  button.addEventListener('selectstart', event => event.preventDefault());
 
   button.addEventListener('pointermove', event => {
     if (!dragging) {
@@ -458,8 +463,8 @@ function getCardBounds() {
 
 function getCardSize() {
   const boardWidth = elements.spreadArea.clientWidth || 320;
-  const width = clamp(boardWidth * 0.18, 112, 156);
-  const height = Math.round(width * CARD_ASPECT_RATIO);
+  const width = boardWidth <= 640 ? MOBILE_CARD_WIDTH : clamp(boardWidth * 0.2, 128, 172);
+  const height = Math.round(width * CARD_IMAGE_ASPECT_RATIO) + CARD_META_HEIGHT;
   return { width, height };
 }
 
