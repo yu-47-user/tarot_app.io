@@ -1,25 +1,43 @@
 [
   {
+    "id": "one-card",
+    "name": "One Card",
+    "nameJa": "1枚引き",
+    "positions": [
+      {
+        "id": "focus",
+        "label": "焦点",
+        "helper": "今の状況にいちばん強く関わるテーマ",
+        "x": 50,
+        "y": 49
+      }
+    ]
+  },
+  {
     "id": "three-card",
     "name": "Three Card",
+    "nameJa": "3枚引き",
     "positions": [
       {
         "id": "past",
-        "label": "Past",
-        "x": 100,
-        "y": 200
+        "label": "過去",
+        "helper": "背景にある流れ",
+        "x": 20,
+        "y": 52
       },
       {
         "id": "present",
-        "label": "Present",
-        "x": 300,
-        "y": 200
+        "label": "現在",
+        "helper": "いま向き合うテーマ",
+        "x": 50,
+        "y": 46
       },
       {
         "id": "future",
-        "label": "Future",
-        "x": 500,
-        "y": 200
+        "label": "近い未来",
+        "helper": "次に起こりやすい流れ",
+        "x": 80,
+        "y": 52
       }
     ]
   }
