@@ -309,13 +309,13 @@ function bindCardInteractions(cardElement, card) {
   let originY = 0;
   let dragging = false;
   let pointerStarted = false;
+  let dragReady = false;
+  let suppressReveal = false;
 
   const beginDrag = event => {
     dragging = true;
     cardElement.classList.add('is-dragging');
     pointerId = event.pointerId;
-    startX = event.clientX;
-    startY = event.clientY;
     originX = card.x;
     originY = card.y;
     button.setPointerCapture(pointerId);
@@ -333,23 +333,33 @@ function bindCardInteractions(cardElement, card) {
       return;
     }
     pointerStarted = true;
+    suppressReveal = false;
+    dragReady = event.pointerType === 'mouse';
+    pointerId = event.pointerId;
     startX = event.clientX;
     startY = event.clientY;
+    originX = card.x;
+    originY = card.y;
 
-    if (event.pointerType === 'mouse') {
-      beginDrag(event);
-      return;
+    if (event.pointerType === 'touch') {
+      pressTimer = setTimeout(() => {
+        dragReady = true;
+        beginDrag(event);
+      }, TOUCH_HOLD_MS);
     }
-
-    pressTimer = setTimeout(() => beginDrag(event), TOUCH_HOLD_MS);
   });
 
   button.addEventListener('pointermove', event => {
     if (!dragging) {
-      if (event.pointerType === 'touch' && pressTimer) {
-        const moveDistance = Math.hypot(event.clientX - startX, event.clientY - startY);
-        if (moveDistance > 8) {
-          clearPressTimer();
+      const moveDistance = Math.hypot(event.clientX - startX, event.clientY - startY);
+      if (event.pointerType === 'touch' && pressTimer && moveDistance > 8) {
+        clearPressTimer();
+      }
+      if (dragReady && moveDistance > 6) {
+        suppressReveal = true;
+        beginDrag(event);
+        if (event.pointerType !== 'touch') {
+          event.preventDefault();
         }
       }
       return;
@@ -365,15 +375,19 @@ function bindCardInteractions(cardElement, card) {
     clearPressTimer();
 
     if (!dragging) {
-      if (pointerStarted) {
+      if (pointerStarted && !suppressReveal) {
         revealOrSelect(card.drawId);
       }
       pointerStarted = false;
+      dragReady = false;
+      suppressReveal = false;
       return;
     }
 
     dragging = false;
     pointerStarted = false;
+    dragReady = false;
+    suppressReveal = false;
     finishDrag(button, cardElement, event.pointerId);
   });
 
@@ -385,18 +399,18 @@ function bindCardInteractions(cardElement, card) {
       return;
     }
     pointerStarted = false;
-    if (pointerId !== null && button.hasPointerCapture(pointerId)) {
-      button.releasePointerCapture(pointerId);
-    }
+    dragReady = false;
+    suppressReveal = false;
+    releasePointerCapture(button, pointerId);
   });
 }
 
 function finishDrag(button, cardElement, activePointerId) {
   cardElement.classList.remove('is-dragging');
-  draggingCleanup(button, activePointerId);
+  releasePointerCapture(button, activePointerId);
 }
 
-function draggingCleanup(button, activePointerId) {
+function releasePointerCapture(button, activePointerId) {
   if (activePointerId !== null && button.hasPointerCapture(activePointerId)) {
     button.releasePointerCapture(activePointerId);
   }
