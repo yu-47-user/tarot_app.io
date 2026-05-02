@@ -216,9 +216,17 @@ button:disabled {
 }
 
 #save-btn,
+#save-image-btn,
 #load-btn {
   background: #e9dfd0;
   color: var(--text);
+}
+
+.button-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
 }
 
 .deck-area {
