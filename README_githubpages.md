@@ -1,22 +1,22 @@
 # tarot_app
 
-GitHub Pages で公開するための静的Webアプリ構成です。
+GitHub Pages で公開するための静的 Web アプリ構成メモです。
 
-- `public/` 配下が公開ディレクトリです。
-- `index.html`, `script.js`, `style.css` などは `public/` 直下に配置してください。
-- 画像は `public/assets/tarot/`（大アルカナ）、`public/assets/tarot/minor/`（小アルカナ）に分けてください。
-- データファイルは `public/data/`、保存データは `public/saves/` です。
+- 公開元はリポジトリルートです。
+- `index.html`, `script.js`, `style.css` などはリポジトリルート直下に配置します。
+- 画像は `assets/tarot/`（大アルカナ）、`assets/tarot/minor/`（小アルカナ）に分けます。
+- データファイルは `data/`、保存データはダウンロードファイルとして扱います。
 
 ## 公開手順
 
-1. `public/` 配下のファイル・フォルダをリポジトリのルート、または `gh-pages` ブランチのルートにコピーしてください。
-2. GitHub Pages の公開対象を `/ (root)` または `gh-pages` ブランチに設定してください。
-3. 小アルカナ画像は `public/assets/tarot/minor/` に配置してください。
+1. リポジトリルートのファイル・フォルダをそのまま GitHub Pages の公開対象にします。
+2. GitHub Pages の公開対象を `/ (root)` に設定します。
+3. サブパス公開でも崩れないよう、参照は相対パスのまま維持します。
 
 ## ディレクトリ構成例
 
 ```
-public/
+repo/
   index.html
   script.js
   style.css
@@ -30,9 +30,10 @@ public/
         ...
   data/
     deck.json
-  saves/
 ```
 
 ## 注意
+
 - 小アルカナ画像が `minor/` フォルダに入っていることを確認してください。
-- 画像パスは `deck.json` で `tarot/minor/xxx.jpg` 形式になっている必要があります。
+- 画像パスは `deck.json` で実ファイル名と大文字小文字まで一致させてください。
+- 画像保存は Canvas 生成、JSON 保存は File API に分離しています。

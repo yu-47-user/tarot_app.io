@@ -17,6 +17,7 @@ const elements = {
   boardSubtitle: document.getElementById('board-subtitle'),
   drawResetBtn: document.getElementById('draw-reset-btn'),
   saveBtn: document.getElementById('save-btn'),
+  saveImageBtn: document.getElementById('save-image-btn'),
   loadBtn: document.getElementById('load-btn'),
   deckArea: document.getElementById('deck-area'),
   spreadArea: document.getElementById('spread-area'),
@@ -57,6 +58,7 @@ function bindEvents() {
   });
   elements.drawResetBtn.addEventListener('click', handlePrimaryAction);
   elements.saveBtn.addEventListener('click', saveReading);
+  elements.saveImageBtn.addEventListener('click', saveBoardImage);
   elements.loadBtn.addEventListener('click', openSaveFile);
   window.addEventListener('resize', renderBoard);
 }
@@ -202,6 +204,7 @@ function updateStatus() {
   const total = spread ? spread.positions.length : 0;
   const drawn = state.drawnCards.length;
   const title = spread ? (spread.nameJa || spread.name) : '未設定';
+  elements.saveImageBtn.disabled = drawn === 0;
 
   if (drawn === 0) {
     elements.progressSummary.textContent = `${title} / 0 / ${total}`;
@@ -583,7 +586,6 @@ async function saveReading() {
     new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }),
     `tarot-reading-${Date.now()}.json`
   );
-  await saveBoardImage();
 }
 
 async function saveBoardImage() {
