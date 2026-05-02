@@ -2,580 +2,337 @@
   {
     "id": "major_0",
     "name": "The Fool",
+    "nameJa": "愚者",
     "arcana": "Major",
     "number": 0,
-    "image": "tarot/00_The_fool.jpg"
+    "image": "./assets/tarot/00_The_fool.jpg",
+    "keywords": {
+      "upright": ["自由", "出発", "好奇心"],
+      "reversed": ["無計画", "迷走", "注意不足"]
+    },
+    "meaning": {
+      "upright": "新しい一歩を軽やかに踏み出す流れです。考え込みすぎるより、今は試してみる姿勢が合います。",
+      "reversed": "勢いだけで進むと足元を見落としやすい時です。まず何を守るかを決めると動きやすくなります。"
+    }
   },
   {
     "id": "major_1",
     "name": "The Magician",
+    "nameJa": "魔術師",
     "arcana": "Major",
     "number": 1,
-    "image": "tarot/01_Magician.jpeg"
+    "image": "./assets/tarot/01_Magician.jpeg",
+    "keywords": {
+      "upright": ["創意", "実行", "集中"],
+      "reversed": ["空回り", "見せかけ", "散漫"]
+    },
+    "meaning": {
+      "upright": "必要な材料はそろっています。意志を具体的な行動に変えるほど流れが形になります。",
+      "reversed": "やれることが多い分だけ焦点がぼけやすい時です。見栄や勢いより手元の一手を整える方が有効です。"
+    }
   },
   {
     "id": "major_2",
     "name": "The High Priestess",
+    "nameJa": "女教皇",
     "arcana": "Major",
     "number": 2,
-    "image": "tarot/02_High_Priestess.jpg"
+    "image": "./assets/tarot/02_High_Priestess.jpg",
+    "keywords": {
+      "upright": ["直感", "静観", "内省"],
+      "reversed": ["閉じすぎ", "誤解", "鈍り"]
+    },
+    "meaning": {
+      "upright": "答えを急がず、まだ言葉になっていない感覚を拾う段階です。静かな観察が判断の質を上げます。",
+      "reversed": "考えを内側に抱え込みすぎて流れが止まりやすい時です。信頼できる相手に少し言語化すると整理が進みます。"
+    }
   },
   {
     "id": "major_3",
     "name": "The Empress",
+    "nameJa": "女帝",
     "arcana": "Major",
     "number": 3,
-    "image": "tarot/03_Empress.jpg"
+    "image": "./assets/tarot/03_Empress.jpg",
+    "keywords": {
+      "upright": ["豊かさ", "受容", "育成"],
+      "reversed": ["甘やかし", "停滞", "過保護"]
+    },
+    "meaning": {
+      "upright": "育てたいものへ丁寧に時間を注ぐほど実りやすい流れです。安心感をつくることが前進につながります。",
+      "reversed": "与えすぎや抱え込みで消耗しやすい時です。世話をする範囲を見直すと余白が戻ります。"
+    }
   },
   {
     "id": "major_4",
     "name": "The Emperor",
+    "nameJa": "皇帝",
     "arcana": "Major",
     "number": 4,
-    "image": "tarot/04_Emperor.jpg"
+    "image": "./assets/tarot/04_Emperor.jpg",
+    "keywords": {
+      "upright": ["安定", "責任", "構築"],
+      "reversed": ["硬直", "支配", "頑固"]
+    },
+    "meaning": {
+      "upright": "土台を整え、判断基準をはっきりさせると物事が進みます。責任の取り方を明確にする時です。",
+      "reversed": "正しさにこだわりすぎると周囲との摩擦が増えます。守るべき芯と手放せるこだわりを分けてください。"
+    }
   },
   {
     "id": "major_5",
     "name": "The Hierophant",
+    "nameJa": "法王",
     "arcana": "Major",
     "number": 5,
-    "image": "tarot/05_Hierophant.jpg"
+    "image": "./assets/tarot/05_Hierophant.jpg",
+    "keywords": {
+      "upright": ["学び", "助言", "慣習"],
+      "reversed": ["形式化", "窮屈さ", "反発"]
+    },
+    "meaning": {
+      "upright": "基本に立ち返るほど安心して進める時です。経験者の助言や既存の型が支えになります。",
+      "reversed": "型に合わせすぎると本音が置き去りになります。必要なルールと、見直してよい前提を切り分けてください。"
+    }
   },
   {
     "id": "major_6",
     "name": "The Lovers",
+    "nameJa": "恋人",
     "arcana": "Major",
     "number": 6,
-    "image": "tarot/06_Lovers.jpg"
+    "image": "./assets/tarot/06_Lovers.jpg",
+    "keywords": {
+      "upright": ["選択", "共感", "調和"],
+      "reversed": ["迷い", "不一致", "優柔不断"]
+    },
+    "meaning": {
+      "upright": "心から納得できる選択が関係性や状況を前に進めます。価値観の一致が重要な鍵になります。",
+      "reversed": "気持ちと現実条件がかみ合いにくい時です。何を優先するかを曖昧にしない方が後悔を減らせます。"
+    }
   },
   {
     "id": "major_7",
     "name": "The Chariot",
+    "nameJa": "戦車",
     "arcana": "Major",
     "number": 7,
-    "image": "tarot/07_Chariot.jpg"
+    "image": "./assets/tarot/07_Chariot.jpg",
+    "keywords": {
+      "upright": ["前進", "突破", "意志"],
+      "reversed": ["暴走", "空転", "制御不足"]
+    },
+    "meaning": {
+      "upright": "迷いがあっても、進む方向を決めれば勢いがつきます。多少の摩擦を越えて前へ出る力があります。",
+      "reversed": "急ぎすぎると全体のバランスが崩れます。まず手綱を握り直し、速度より制御を優先する場面です。"
+    }
   },
   {
     "id": "major_8",
     "name": "Strength",
+    "nameJa": "力",
     "arcana": "Major",
     "number": 8,
-    "image": "tarot/08_Strength.jpg"
+    "image": "./assets/tarot/08_Strength.jpg",
+    "keywords": {
+      "upright": ["忍耐", "信頼", "しなやかさ"],
+      "reversed": ["自信喪失", "消耗", "我慢しすぎ"]
+    },
+    "meaning": {
+      "upright": "強く押すより、落ち着いて向き合うことで状況を動かせます。自分の感情を扱う丁寧さが力になります。",
+      "reversed": "無理に平静を保とうとして疲れやすい時です。まず自分の消耗に気づくことが立て直しの第一歩です。"
+    }
   },
   {
     "id": "major_9",
     "name": "The Hermit",
+    "nameJa": "隠者",
     "arcana": "Major",
     "number": 9,
-    "image": "tarot/09_Hermit.jpg"
+    "image": "./assets/tarot/09_Hermit.jpg",
+    "keywords": {
+      "upright": ["探求", "熟考", "静けさ"],
+      "reversed": ["孤立", "停滞", "考えすぎ"]
+    },
+    "meaning": {
+      "upright": "一人で考える時間が判断を深くします。外の情報より、自分の経験から拾える答えがありそうです。",
+      "reversed": "こもりすぎると視野が狭まりやすい時です。少しだけ外の意見を入れると詰まりがほどけます。"
+    }
   },
   {
     "id": "major_10",
     "name": "Wheel of Fortune",
+    "nameJa": "運命の輪",
     "arcana": "Major",
     "number": 10,
-    "image": "tarot/10_Wheel_of_Fortune.jpg"
+    "image": "./assets/tarot/10_Wheel_of_Fortune.jpg",
+    "keywords": {
+      "upright": ["転機", "流れ", "追い風"],
+      "reversed": ["停滞", "すれ違い", "波乱"]
+    },
+    "meaning": {
+      "upright": "状況が動きやすい転換点です。自分で全部を握るより、来た流れを見極めて乗る姿勢が有効です。",
+      "reversed": "期待どおりに回らず、タイミングのずれを感じやすい時です。焦って回そうとせず、足場を整えてください。"
+    }
   },
   {
     "id": "major_11",
     "name": "Justice",
+    "nameJa": "正義",
     "arcana": "Major",
     "number": 11,
-    "image": "tarot/11_Justice.jpg"
+    "image": "./assets/tarot/11_Justice.jpg",
+    "keywords": {
+      "upright": ["均衡", "判断", "誠実"],
+      "reversed": ["偏り", "不公平感", "先送り"]
+    },
+    "meaning": {
+      "upright": "感情だけでなく事実も見て決めることで納得感が生まれます。対等さと誠実さが鍵になります。",
+      "reversed": "片方の視点に寄りすぎると判断がぶれます。都合のよい解釈をしていないか見直す余地があります。"
+    }
   },
   {
     "id": "major_12",
     "name": "The Hanged Man",
+    "nameJa": "吊るされた男",
     "arcana": "Major",
     "number": 12,
-    "image": "tarot/12_Hanged_Man.jpg"
+    "image": "./assets/tarot/12_Hanged_Man.jpg",
+    "keywords": {
+      "upright": ["視点転換", "保留", "受容"],
+      "reversed": ["膠着", "徒労感", "抵抗"]
+    },
+    "meaning": {
+      "upright": "すぐに動かないことで見えてくるものがあります。いったん立ち止まり、見方を変える価値がある時です。",
+      "reversed": "我慢だけが続いて意味を見失いやすい時です。保留を続ける理由がまだあるかを確かめてください。"
+    }
   },
   {
     "id": "major_13",
     "name": "Death",
+    "nameJa": "死神",
     "arcana": "Major",
     "number": 13,
-    "image": "tarot/13_Death.jpg"
+    "image": "./assets/tarot/13_Death.jpg",
+    "keywords": {
+      "upright": ["終わり", "刷新", "切替"],
+      "reversed": ["執着", "変化拒否", "長引き"]
+    },
+    "meaning": {
+      "upright": "一区切りを受け入れることで新しい流れが入ります。終わらせる勇気が再生の準備になります。",
+      "reversed": "変化を避けるほど苦しさが長引きやすい時です。手放せない理由を言葉にすると動き出せます。"
+    }
   },
   {
     "id": "major_15",
     "name": "The Devil",
+    "nameJa": "悪魔",
     "arcana": "Major",
     "number": 15,
-    "image": "tarot/15_Devil.jpg"
+    "image": "./assets/tarot/15_Devil.jpg",
+    "keywords": {
+      "upright": ["執着", "欲望", "束縛"],
+      "reversed": ["解放", "自覚", "距離を取る"]
+    },
+    "meaning": {
+      "upright": "惰性や依存の形で抜けにくい関係が強まっているかもしれません。何に縛られているかを見る時です。",
+      "reversed": "絡んでいたものから少しずつ離れられる兆しです。問題を自覚した時点で流れは変わり始めています。"
+    }
   },
   {
     "id": "major_16",
     "name": "The Tower",
+    "nameJa": "塔",
     "arcana": "Major",
     "number": 16,
-    "image": "tarot/16_Tower.jpg"
+    "image": "./assets/tarot/16_Tower.jpg",
+    "keywords": {
+      "upright": ["崩壊", "衝撃", "覚醒"],
+      "reversed": ["余震", "回避失敗", "内面の揺れ"]
+    },
+    "meaning": {
+      "upright": "前提が崩れる出来事は痛みを伴いますが、見ないままでは進めない事実を示しています。",
+      "reversed": "大きな変化の余波が続きやすい時です。立て直しを急ぐより、まず安全を確保してください。"
+    }
   },
   {
     "id": "major_17",
     "name": "The Star",
+    "nameJa": "星",
     "arcana": "Major",
     "number": 17,
-    "image": "tarot/17_Star.jpg"
+    "image": "./assets/tarot/17_Star.jpg",
+    "keywords": {
+      "upright": ["希望", "回復", "素直さ"],
+      "reversed": ["不安", "期待薄", "自信の揺れ"]
+    },
+    "meaning": {
+      "upright": "張りつめた後に、先を信じられる感覚が戻ってきます。無理のない理想が道しるべになります。",
+      "reversed": "希望を持ちたいのに気持ちが追いつきにくい時です。小さく回復している部分に目を向けてください。"
+    }
   },
   {
     "id": "major_18",
     "name": "The Moon",
+    "nameJa": "月",
     "arcana": "Major",
     "number": 18,
-    "image": "tarot/18_Moon.jpg"
+    "image": "./assets/tarot/18_Moon.jpg",
+    "keywords": {
+      "upright": ["曖昧さ", "感受性", "不安"],
+      "reversed": ["霧が晴れる", "整理", "見極め"]
+    },
+    "meaning": {
+      "upright": "見通しが立ちにくく、感情に揺さぶられやすい時です。今は断定より観察を重ねる方が安全です。",
+      "reversed": "混乱の輪郭が少しずつ見えてきます。思い込みと事実を分けることで落ち着きが戻ります。"
+    }
   },
   {
     "id": "major_19",
     "name": "The Sun",
+    "nameJa": "太陽",
     "arcana": "Major",
     "number": 19,
-    "image": "tarot/19_Sun.jpg"
+    "image": "./assets/tarot/19_Sun.jpg",
+    "keywords": {
+      "upright": ["明朗", "成功", "解放"],
+      "reversed": ["空回り", "照れ", "過信"]
+    },
+    "meaning": {
+      "upright": "見通しが明るくなり、率直に動くほど成果につながりやすい時です。喜びを受け取って構いません。",
+      "reversed": "よい要素はあるのに、素直に受け取り切れないかもしれません。期待値の上げすぎを少し緩めてください。"
+    }
   },
   {
     "id": "major_20",
     "name": "Judgement",
+    "nameJa": "審判",
     "arcana": "Major",
     "number": 20,
-    "image": "tarot/20_Judgement.jpg"
+    "image": "./assets/tarot/20_Judgement.jpg",
+    "keywords": {
+      "upright": ["再起", "呼び戻し", "決断"],
+      "reversed": ["迷い", "先延ばし", "自己批判"]
+    },
+    "meaning": {
+      "upright": "過去から学んだことを今の決断に生かせる時です。呼びかけに応えるように動く流れがあります。",
+      "reversed": "自分を厳しく裁きすぎて動けなくなりやすい時です。まず事実ベースで見直すと選び直せます。"
+    }
   },
   {
     "id": "major_21",
     "name": "The World",
+    "nameJa": "世界",
     "arcana": "Major",
     "number": 21,
-    "image": "tarot/21_World.jpg"
-  },
-  {
-    "id": "minor_wands_1",
-    "name": "Ace of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 1,
-    "image": "tarot/minor/minor_wands_1.jpg"
-  },
-  {
-    "id": "minor_wands_2",
-    "name": "Two of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 2,
-    "image": "tarot/minor/minor_wands_2.jpg"
-  },
-  {
-    "id": "minor_wands_3",
-    "name": "Three of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 3,
-    "image": "tarot/minor/minor_wands_3.jpg"
-  },
-  {
-    "id": "minor_wands_4",
-    "name": "Four of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 4,
-    "image": "tarot/minor/minor_wands_4.jpg"
-  },
-  {
-    "id": "minor_wands_5",
-    "name": "Five of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 5,
-    "image": "tarot/minor/minor_wands_5.jpg"
-  },
-  {
-    "id": "minor_wands_6",
-    "name": "Six of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 6,
-    "image": "tarot/minor/minor_wands_6.jpg"
-  },
-  {
-    "id": "minor_wands_7",
-    "name": "Seven of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 7,
-    "image": "tarot/minor/minor_wands_7.jpg"
-  },
-  {
-    "id": "minor_wands_8",
-    "name": "Eight of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 8,
-    "image": "tarot/minor/minor_wands_8.jpg"
-  },
-  {
-    "id": "minor_wands_9",
-    "name": "Nine of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 9,
-    "image": "tarot/minor/minor_wands_9.jpg"
-  },
-  {
-    "id": "minor_wands_10",
-    "name": "Ten of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "number": 10,
-    "image": "tarot/minor/minor_wands_10.jpg"
-  },
-  {
-    "id": "minor_wands_page",
-    "name": "Page of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "image": "tarot/minor/minor_wands_page.jpg"
-  },
-  {
-    "id": "minor_wands_knight",
-    "name": "Knight of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "image": "tarot/minor/minor_wands_knight.jpg"
-  },
-  {
-    "id": "minor_wands_queen",
-    "name": "Queen of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "image": "tarot/minor/minor_wands_queen.jpg"
-  },
-  {
-    "id": "minor_wands_king",
-    "name": "King of Wands",
-    "arcana": "Minor",
-    "suit": "Wands",
-    "image": "tarot/minor/minor_wands_king.jpg"
-  },
-  {
-    "id": "minor_cups_1",
-    "name": "Ace of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 1,
-    "image": "tarot/minor/minor_cups_1.jpg"
-  },
-  {
-    "id": "minor_cups_2",
-    "name": "Two of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 2,
-    "image": "tarot/minor/minor_cups_2.jpg"
-  },
-  {
-    "id": "minor_cups_3",
-    "name": "Three of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 3,
-    "image": "tarot/minor/minor_cups_3.jpg"
-  },
-  {
-    "id": "minor_cups_4",
-    "name": "Four of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 4,
-    "image": "tarot/minor/minor_cups_4.jpg"
-  },
-  {
-    "id": "minor_cups_5",
-    "name": "Five of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 5,
-    "image": "tarot/minor/minor_cups_5.jpg"
-  },
-  {
-    "id": "minor_cups_6",
-    "name": "Six of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 6,
-    "image": "tarot/minor/minor_cups_6.jpg"
-  },
-  {
-    "id": "minor_cups_7",
-    "name": "Seven of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 7,
-    "image": "tarot/minor/minor_cups_7.jpg"
-  },
-  {
-    "id": "minor_cups_8",
-    "name": "Eight of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 8,
-    "image": "tarot/minor/minor_cups_8.jpg"
-  },
-  {
-    "id": "minor_cups_9",
-    "name": "Nine of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 9,
-    "image": "tarot/minor/minor_cups_9.jpg"
-  },
-  {
-    "id": "minor_cups_10",
-    "name": "Ten of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "number": 10,
-    "image": "tarot/minor/minor_cups_10.jpg"
-  },
-  {
-    "id": "minor_cups_page",
-    "name": "Page of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "image": "tarot/minor/minor_cups_page.jpg"
-  },
-  {
-    "id": "minor_cups_knight",
-    "name": "Knight of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "image": "tarot/minor/minor_cups_knight.jpg"
-  },
-  {
-    "id": "minor_cups_queen",
-    "name": "Queen of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "image": "tarot/minor/minor_cups_queen.jpg"
-  },
-  {
-    "id": "minor_cups_king",
-    "name": "King of Cups",
-    "arcana": "Minor",
-    "suit": "Cups",
-    "image": "tarot/minor/minor_cups_king.jpg"
-  },
-  {
-    "id": "minor_swords_1",
-    "name": "Ace of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 1,
-    "image": "tarot/minor/minor_swords_1.jpg"
-  },
-  {
-    "id": "minor_swords_2",
-    "name": "Two of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 2,
-    "image": "tarot/minor/minor_swords_2.jpg"
-  },
-  {
-    "id": "minor_swords_3",
-    "name": "Three of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 3,
-    "image": "tarot/minor/minor_swords_3.jpg"
-  },
-  {
-    "id": "minor_swords_4",
-    "name": "Four of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 4,
-    "image": "tarot/minor/minor_swords_4.jpg"
-  },
-  {
-    "id": "minor_swords_5",
-    "name": "Five of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 5,
-    "image": "tarot/minor/minor_swords_5.jpg"
-  },
-  {
-    "id": "minor_swords_6",
-    "name": "Six of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 6,
-    "image": "tarot/minor/minor_swords_6.jpg"
-  },
-  {
-    "id": "minor_swords_7",
-    "name": "Seven of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 7,
-    "image": "tarot/minor/minor_swords_7.jpg"
-  },
-  {
-    "id": "minor_swords_8",
-    "name": "Eight of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 8,
-    "image": "tarot/minor/minor_swords_8.jpg"
-  },
-  {
-    "id": "minor_swords_9",
-    "name": "Nine of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 9,
-    "image": "tarot/minor/minor_swords_9.jpg"
-  },
-  {
-    "id": "minor_swords_10",
-    "name": "Ten of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "number": 10,
-    "image": "tarot/minor/minor_swords_10.jpg"
-  },
-  {
-    "id": "minor_swords_page",
-    "name": "Page of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "image": "tarot/minor/minor_swords_page.jpg"
-  },
-  {
-    "id": "minor_swords_knight",
-    "name": "Knight of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "image": "tarot/minor/minor_swords_knight.jpg"
-  },
-  {
-    "id": "minor_swords_queen",
-    "name": "Queen of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "image": "tarot/minor/minor_swords_queen.jpg"
-  },
-  {
-    "id": "minor_swords_king",
-    "name": "King of Swords",
-    "arcana": "Minor",
-    "suit": "Swords",
-    "image": "tarot/minor/minor_swords_king.jpg"
-  },
-  {
-    "id": "minor_pentacles_1",
-    "name": "Ace of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 1,
-    "image": "tarot/minor/minor_pentacles_1.jpg"
-  },
-  {
-    "id": "minor_pentacles_2",
-    "name": "Two of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 2,
-    "image": "tarot/minor/minor_pentacles_2.jpg"
-  },
-  {
-    "id": "minor_pentacles_3",
-    "name": "Three of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 3,
-    "image": "tarot/minor/minor_pentacles_3.jpg"
-  },
-  {
-    "id": "minor_pentacles_4",
-    "name": "Four of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 4,
-    "image": "tarot/minor/minor_pentacles_4.jpg"
-  },
-  {
-    "id": "minor_pentacles_5",
-    "name": "Five of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 5,
-    "image": "tarot/minor/minor_pentacles_5.jpg"
-  },
-  {
-    "id": "minor_pentacles_6",
-    "name": "Six of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 6,
-    "image": "tarot/minor/minor_pentacles_6.jpg"
-  },
-  {
-    "id": "minor_pentacles_7",
-    "name": "Seven of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 7,
-    "image": "tarot/minor/minor_pentacles_7.jpg"
-  },
-  {
-    "id": "minor_pentacles_8",
-    "name": "Eight of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 8,
-    "image": "tarot/minor/minor_pentacles_8.jpg"
-  },
-  {
-    "id": "minor_pentacles_9",
-    "name": "Nine of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 9,
-    "image": "tarot/minor/minor_pentacles_9.jpg"
-  },
-  {
-    "id": "minor_pentacles_10",
-    "name": "Ten of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "number": 10,
-    "image": "tarot/minor/minor_pentacles_10.jpg"
-  },
-  {
-    "id": "minor_pentacles_page",
-    "name": "Page of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "image": "tarot/minor/minor_pentacles_page.jpg"
-  },
-  {
-    "id": "minor_pentacles_knight",
-    "name": "Knight of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "image": "tarot/minor/minor_pentacles_knight.jpg"
-  },
-  {
-    "id": "minor_pentacles_queen",
-    "name": "Queen of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "image": "tarot/minor/minor_pentacles_queen.jpg"
-  },
-  {
-    "id": "minor_pentacles_king",
-    "name": "King of Pentacles",
-    "arcana": "Minor",
-    "suit": "Pentacles",
-    "image": "tarot/minor/minor_pentacles_king.jpg"
+    "image": "./assets/tarot/21_World.jpg",
+    "keywords": {
+      "upright": ["完成", "統合", "達成"],
+      "reversed": ["詰め不足", "未完", "区切れなさ"]
+    },
+    "meaning": {
+      "upright": "ひとつの流れがまとまり、納得して次へ進める段階です。全体を見渡した達成感があります。",
+      "reversed": "もう少しでまとまるのに、最後の詰めが残りやすい時です。終わりの条件を明確にすると整います。"
+    }
   }
 ]

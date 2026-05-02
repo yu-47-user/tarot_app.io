@@ -3,17 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>タロット占いアプリ</title>
-  <link rel="stylesheet" href="./style.css?v=20250628">
-  <!-- html2canvas CDN -->
+  <title>tarot_app.io</title>
+  <link rel="stylesheet" href="./style.css?v=20260502">
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <h1>タロット占いアプリ</h1>
-  <div id="spread-area"></div>
-  <textarea id="note" placeholder="占い結果メモ"></textarea>
-  <button id="save-btn">保存</button>
-  <button id="load-btn">読み込み</button>
-  <script src="./script.js?v=20250628"></script>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">tarot_app.io</p>
+      <h1>ブラウザで引いて、考えを残すタロット</h1>
+      <p class="hero-copy">1枚引きと3枚引きに絞った、静かなセルフリーディング用アプリです。カードをめくり、意味を読み、自分の言葉をメモできます。</p>
+    </section>
+
+    <section class="panel controls-panel" aria-labelledby="reading-setup-title">
+      <div class="panel-heading">
+        <h2 id="reading-setup-title">リーディング設定</h2>
+        <p>質問を決めて、スプレッドを選び、山札からカードを引きます。</p>
+      </div>
+
+      <div class="control-grid">
+        <label class="field">
+          <span>質問</span>
+          <input id="question" type="text" placeholder="今いちばん整理したいこと">
+        </label>
+
+        <label class="field">
+          <span>スプレッド</span>
+          <select id="spread-select"></select>
+        </label>
+      </div>
+
+      <div class="control-summary">
+        <div>
+          <span class="summary-label">デッキ</span>
+          <strong id="deck-summary">大アルカナ</strong>
+          <p id="deck-note">画像がそろっているカードのみ使用します。</p>
+        </div>
+        <div>
+          <span class="summary-label">現在の進行</span>
+          <strong id="progress-summary">開始前</strong>
+          <p id="status-message">山札をタップしてカードを引いてください。</p>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="draw-reset-btn" type="button">引き直す</button>
+        <button id="save-btn" type="button">保存</button>
+        <button id="load-btn" type="button">読み込み</button>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel board-panel">
+        <div class="panel-heading">
+          <h2 id="board-title">盤面</h2>
+          <p id="board-subtitle">カードを引く前に質問を整えてください。</p>
+        </div>
+
+        <div id="deck-area" class="deck-area" aria-live="polite"></div>
+        <div id="spread-area" class="spread-area" aria-label="タロット盤面"></div>
+      </div>
+
+      <aside class="panel detail-panel" aria-labelledby="detail-title">
+        <div class="panel-heading">
+          <h2 id="detail-title">カード詳細</h2>
+          <p>カードをめくると意味が表示されます。</p>
+        </div>
+
+        <div id="empty-detail" class="empty-state">
+          <p>カードを引いて選択してください。</p>
+        </div>
+
+        <div id="card-detail" class="detail-card" hidden>
+          <p id="detail-position" class="detail-position"></p>
+          <h3 id="detail-name"></h3>
+          <p id="detail-orientation" class="detail-orientation"></p>
+          <p id="detail-keywords" class="detail-keywords"></p>
+          <p id="detail-meaning" class="detail-meaning"></p>
+        </div>
+
+        <label class="field note-field" for="note">
+          <span>メモ</span>
+          <textarea id="note" placeholder="カードを見て浮かんだこと、今の状況、後で振り返りたいこと"></textarea>
+        </label>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./script.js?v=20260502"></script>
 </body>
 </html>
