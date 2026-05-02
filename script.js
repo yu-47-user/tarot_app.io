@@ -3,7 +3,9 @@ const CARD_BACK_IMAGE = './assets/tarot/tarot_back.jpg';
 const TOUCH_HOLD_MS = 280;
 const CARD_IMAGE_ASPECT_RATIO = 528 / 300;
 const CARD_META_HEIGHT = 54;
-const MOBILE_CARD_WIDTH = 142;
+const MOBILE_CARD_WIDTH = 96;
+const EXPORT_SCALE = 2;
+const EXPORT_CARD_RADIUS = 8;
 
 const elements = {
   question: document.getElementById('question'),
@@ -30,6 +32,8 @@ const elements = {
 
 const state = {
   deck: [],
+  deckTotal: 0,
+  missingCards: [],
   spreads: [],
   selectedSpreadId: '',
   shuffledDeck: [],
@@ -64,12 +68,40 @@ async function loadDeck() {
       throw new Error(`deck.json ${response.status}`);
     }
     const deck = await response.json();
-    state.deck = Array.isArray(deck) ? deck : [];
+    const cards = Array.isArray(deck) ? deck : [];
+    const availableCards = await filterCardsWithImages(cards);
+    state.deck = availableCards;
+    state.deckTotal = cards.length;
+    state.missingCards = cards.filter(card => !availableCards.includes(card));
   } catch (error) {
     console.error(error);
     alert('カードデータを読み込めませんでした。');
     state.deck = [];
+    state.deckTotal = 0;
+    state.missingCards = [];
   }
+}
+
+async function filterCardsWithImages(cards) {
+  const results = await Promise.all(cards.map(async card => ({
+    card,
+    hasImage: await canLoadImage(card.image)
+  })));
+  return results.filter(result => result.hasImage).map(result => result.card);
+}
+
+function canLoadImage(src) {
+  return new Promise(resolve => {
+    if (!src) {
+      resolve(false);
+      return;
+    }
+
+    const image = new Image();
+    image.onload = () => resolve(true);
+    image.onerror = () => resolve(false);
+    image.src = src;
+  });
 }
 
 async function loadSpreads() {
@@ -89,8 +121,10 @@ async function loadSpreads() {
 
 function initializeControls() {
   const availableCount = state.deck.length;
-  elements.deckSummary.textContent = `大アルカナ ${availableCount}枚`;
-  elements.deckNote.textContent = '画像がそろっているカードだけで構成しています。';
+  elements.deckSummary.textContent = `大アルカナ ${availableCount} / ${state.deckTotal}枚`;
+  elements.deckNote.textContent = state.missingCards.length
+    ? `画像未検出: ${state.missingCards.map(card => card.nameJa).join('、')}`
+    : '画像がそろっているカードだけで構成しています。';
   elements.spreadSelect.innerHTML = '';
 
   state.spreads.forEach(spread => {
@@ -464,7 +498,8 @@ function getCardBounds() {
 function getCardSize() {
   const boardWidth = elements.spreadArea.clientWidth || 320;
   const width = boardWidth <= 640 ? MOBILE_CARD_WIDTH : clamp(boardWidth * 0.2, 128, 172);
-  const height = Math.round(width * CARD_IMAGE_ASPECT_RATIO) + CARD_META_HEIGHT;
+  const metaHeight = boardWidth <= 640 ? 48 : CARD_META_HEIGHT;
+  const height = Math.round(width * CARD_IMAGE_ASPECT_RATIO) + metaHeight;
   return { width, height };
 }
 
@@ -552,20 +587,168 @@ async function saveReading() {
 }
 
 async function saveBoardImage() {
-  if (typeof html2canvas !== 'function') {
+  if (!state.drawnCards.length) {
     return;
   }
 
   try {
-    const canvas = await html2canvas(elements.spreadArea, {
-      backgroundColor: '#fbf7ef',
-      useCORS: true
-    });
+    const canvas = await renderReadingCanvas();
     const url = canvas.toDataURL('image/png');
     downloadUrl(url, `tarot-reading-${Date.now()}.png`);
   } catch (error) {
     console.warn('盤面画像の保存に失敗しました。', error);
   }
+}
+
+async function renderReadingCanvas() {
+  const width = Math.max(320, Math.ceil(elements.spreadArea.clientWidth || 0));
+  const height = Math.max(420, Math.ceil(elements.spreadArea.clientHeight || 0));
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+
+  canvas.width = width * EXPORT_SCALE;
+  canvas.height = height * EXPORT_SCALE;
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+  context.scale(EXPORT_SCALE, EXPORT_SCALE);
+  drawBoardBackground(context, width, height);
+
+  const spread = getCurrentSpread();
+  if (spread) {
+    drawExportSlots(context, spread, width, height);
+  }
+
+  const images = await preloadExportImages();
+  state.drawnCards.forEach(card => {
+    drawExportCard(context, card, images.get(getCardImageSource(card)));
+  });
+
+  return canvas;
+}
+
+function drawBoardBackground(context, width, height) {
+  const gradient = context.createLinearGradient(0, 0, 0, height);
+  gradient.addColorStop(0, '#fffdf8');
+  gradient.addColorStop(1, '#fbf7ef');
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
+  context.strokeStyle = '#d8ccb8';
+  context.lineWidth = 1;
+  context.strokeRect(0.5, 0.5, width - 1, height - 1);
+}
+
+function drawExportSlots(context, spread, width, height) {
+  const slotWidth = width <= 420 ? 110 : 160;
+  const slotHeight = Math.round(slotWidth * CARD_IMAGE_ASPECT_RATIO);
+  context.save();
+  context.setLineDash([4, 4]);
+  context.strokeStyle = 'rgba(106, 93, 83, 0.35)';
+  context.fillStyle = 'rgba(255, 255, 255, 0.22)';
+  spread.positions.forEach(position => {
+    const x = Math.round((width * position.x) / 100 - slotWidth / 2);
+    const y = Math.round((height * position.y) / 100 - slotHeight / 2);
+    drawRoundRect(context, x, y, slotWidth, slotHeight, EXPORT_CARD_RADIUS);
+    context.fill();
+    context.stroke();
+  });
+  context.restore();
+}
+
+async function preloadExportImages() {
+  const sources = new Set(state.drawnCards.map(getCardImageSource));
+  const entries = await Promise.all([...sources].map(async source => [source, await loadImage(source)]));
+  return new Map(entries);
+}
+
+function getCardImageSource(card) {
+  return card.revealed ? card.image : CARD_BACK_IMAGE;
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`image load failed: ${src}`));
+    image.src = src;
+  });
+}
+
+function drawExportCard(context, card, image) {
+  const { width, height } = getCardSize();
+  const imageHeight = Math.round(width * CARD_IMAGE_ASPECT_RATIO);
+  const metaHeight = height - imageHeight;
+  const x = Math.round(card.x);
+  const y = Math.round(card.y);
+
+  context.save();
+  context.shadowColor = 'rgba(45, 28, 13, 0.16)';
+  context.shadowBlur = 18;
+  context.shadowOffsetY = 12;
+  drawRoundRect(context, x, y, width, height, EXPORT_CARD_RADIUS);
+  context.fillStyle = '#fffdf8';
+  context.fill();
+  context.restore();
+
+  context.save();
+  drawRoundRect(context, x, y, width, imageHeight, EXPORT_CARD_RADIUS);
+  context.clip();
+  context.fillStyle = '#eadfcf';
+  context.fillRect(x, y, width, imageHeight);
+  if (card.revealed && !card.upright) {
+    context.translate(x + width / 2, y + imageHeight / 2);
+    context.rotate(Math.PI);
+    drawContainedImage(context, image, -width / 2, -imageHeight / 2, width, imageHeight);
+  } else {
+    drawContainedImage(context, image, x, y, width, imageHeight);
+  }
+  context.restore();
+
+  context.fillStyle = 'rgba(255, 253, 248, 0.98)';
+  context.fillRect(x, y + imageHeight, width, metaHeight);
+  context.fillStyle = '#6a5d53';
+  context.font = '12px "Noto Sans JP", sans-serif';
+  context.fillText(card.position.label, x + 8, y + imageHeight + 18);
+  context.fillStyle = '#241d17';
+  context.font = 'bold 14px "Noto Sans JP", sans-serif';
+  drawClampedText(context, card.revealed ? card.nameJa : '伏せたカード', x + 8, y + imageHeight + 38, width - 16);
+}
+
+function drawContainedImage(context, image, x, y, width, height) {
+  const imageRatio = image.naturalWidth / image.naturalHeight;
+  const boxRatio = width / height;
+  const drawWidth = imageRatio > boxRatio ? width : height * imageRatio;
+  const drawHeight = imageRatio > boxRatio ? width / imageRatio : height;
+  const drawX = x + (width - drawWidth) / 2;
+  const drawY = y + (height - drawHeight) / 2;
+  context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+}
+
+function drawClampedText(context, text, x, y, maxWidth) {
+  if (context.measureText(text).width <= maxWidth) {
+    context.fillText(text, x, y);
+    return;
+  }
+
+  let clipped = text;
+  while (clipped.length > 1 && context.measureText(`${clipped}…`).width > maxWidth) {
+    clipped = clipped.slice(0, -1);
+  }
+  context.fillText(`${clipped}…`, x, y);
+}
+
+function drawRoundRect(context, x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(x + safeRadius, y);
+  context.lineTo(x + width - safeRadius, y);
+  context.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  context.lineTo(x + width, y + height - safeRadius);
+  context.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  context.lineTo(x + safeRadius, y + height);
+  context.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  context.lineTo(x, y + safeRadius);
+  context.quadraticCurveTo(x, y, x + safeRadius, y);
+  context.closePath();
 }
 
 function downloadBlob(blob, filename) {

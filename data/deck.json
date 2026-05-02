@@ -224,6 +224,22 @@
     }
   },
   {
+    "id": "major_14",
+    "name": "Temperance",
+    "nameJa": "節制",
+    "arcana": "Major",
+    "number": 14,
+    "image": "./assets/tarot/14_Temperance.svg",
+    "keywords": {
+      "upright": ["調和", "調整", "中庸"],
+      "reversed": ["偏り", "不均衡", "急ぎすぎ"]
+    },
+    "meaning": {
+      "upright": "違う要素を少しずつなじませることで、無理のない流れが生まれます。極端に振れず、調整を重ねる時です。",
+      "reversed": "バランスを崩しやすく、急いで整えようとするほど乱れやすい時です。速度を落として配分を見直してください。"
+    }
+  },
+  {
     "id": "major_15",
     "name": "The Devil",
     "nameJa": "悪魔",
