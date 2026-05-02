@@ -1,0 +1,26 @@
+[
+  {
+    "id": "three-card",
+    "name": "Three Card",
+    "positions": [
+      {
+        "id": "past",
+        "label": "Past",
+        "x": 100,
+        "y": 200
+      },
+      {
+        "id": "present",
+        "label": "Present",
+        "x": 300,
+        "y": 200
+      },
+      {
+        "id": "future",
+        "label": "Future",
+        "x": 500,
+        "y": 200
+      }
+    ]
+  }
+]

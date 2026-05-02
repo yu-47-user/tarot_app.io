@@ -1,625 +1,537 @@
-// タロット占いアプリ メインスクリプト
-// 今後、カード表示・シャッフル・保存/読込機能などを実装
-
-document.getElementById('save-btn').addEventListener('click', () => {
-  // spread-area内のカード情報を収集
-  const spreadArea = document.getElementById('spread-area');
-  const cardDivs = spreadArea.querySelectorAll('.tarot-card');
-  const cards = Array.from(cardDivs).map(cardDiv => {
-    const img = cardDiv.querySelector('img');
-    const nameDiv = cardDiv.querySelector('div');
-    const nameText = nameDiv.textContent;
-    const upright = nameText.includes('正位置');
-    const left = parseInt(cardDiv.style.left);
-    const top = parseInt(cardDiv.style.top);
-    const isFace = !img.src.includes('tarot_back.jpg');
-    const cardName = nameText.replace(/：\d+/, '').replace(/（正位置）|（逆位置）/g, '').replace(/\(.+\)$/,'').trim();
-    const cardId = cardDiv.dataset.cardId ? parseInt(cardDiv.dataset.cardId) : null;
-    return { id: cardId, name: cardName, left, top, upright, isFace };
-  });
-  // メモ欄
-  const note = document.getElementById('note').value;
-  // 保存データ
-  const saveData = { mode: freeMode ? 'free' : 'spread', cards, note, date: new Date().toISOString() };
-  // JSONダウンロード
-  const blob = new Blob([JSON.stringify(saveData, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'tarot_save_' + Date.now() + '.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-});
-document.getElementById('load-btn').addEventListener('click', () => {
-  // ファイル選択ダイアログを表示
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'application/json';
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const data = JSON.parse(ev.target.result);
-        // メモ欄復元
-        document.getElementById('note').value = data.note || '';
-        // モード復元
-        freeMode = (data.mode === 'free');
-        updateModeUI();
-        // カード配置復元
-        const spreadArea = document.getElementById('spread-area');
-        spreadArea.innerHTML = '';
-        fetch('data/deck.json')
-          .then(res => res.json())
-          .then(deck => {
-            data.cards.forEach(card => {
-              const cardInfo = deck.find(d => d.name === card.name);
-              if (!cardInfo) return;
-              const cardDiv = document.createElement('div');
-              cardDiv.className = 'tarot-card';
-              cardDiv.style.position = 'absolute';
-              cardDiv.style.left = card.left + 'px';
-              cardDiv.style.top = card.top + 'px';
-              cardDiv.style.textAlign = 'center';
-              cardDiv.setAttribute('draggable', 'true');
-              if (card.id) cardDiv.dataset.cardId = card.id;
-              // 画像
-              const img = document.createElement('img');
-              img.src = card.isFace ? ('assets/' + cardInfo.image) : 'assets/tarot/tarot_back.jpg';
-              img.alt = card.name;
-              img.style.width = '120px';
-              img.style.height = '200px';
-              img.style.cursor = 'pointer';
-              // カード名
-              let nameText = card.name;
-              if (typeof card.id !== 'undefined') nameText += `：${card.id}`;
-              // 正位置・逆位置表記は表示しない
-              const name = document.createElement('div');
-              name.textContent = nameText;
-              name.style.marginTop = '8px';
-              name.style.display = card.isFace ? 'block' : 'none';
-              cardDiv.appendChild(img);
-              cardDiv.appendChild(name);
-              cardDiv.style.transform = 'none';
-              // 正逆位置クラスを正しく付与
-              if (!card.upright && card.isFace) {
-                cardDiv.classList.add('reverse');
-              } else {
-                cardDiv.classList.remove('reverse');
-              }
-              // タップで表裏切替
-              img.addEventListener('click', () => {
-                if (img.src.includes('tarot_back.jpg')) {
-                  img.src = 'assets/' + cardInfo.image;
-                  img.alt = card.name;
-                  name.style.display = 'block';
-                  if (!card.upright) cardDiv.classList.add('reverse');
-                  else cardDiv.classList.remove('reverse');
-                } else {
-                  img.src = 'assets/tarot/tarot_back.jpg';
-                  img.alt = '裏面';
-                  name.style.display = 'none';
-                  cardDiv.classList.remove('reverse');
-                }
-              });
-              // ドラッグ＆ドロップ
-              let dragOffsetX, dragOffsetY;
-              let isTouchDragging = false;
-              let touchStartX, touchStartY;
-              let cardStartLeft, cardStartTop;
-
-              // --- PC用ドラッグ ---
-              cardDiv.addEventListener('dragstart', (e) => {
-                const cardRect = cardDiv.getBoundingClientRect();
-                dragOffsetX = e.clientX - cardRect.left;
-                dragOffsetY = e.clientY - cardRect.top;
-              });
-              cardDiv.addEventListener('dragend', (e) => {
-                const rect = spreadArea.getBoundingClientRect();
-                let newLeft = e.clientX - rect.left - dragOffsetX;
-                let newTop = e.clientY - rect.top - dragOffsetY;
-                // 配置エリア外に出せないよう制限
-                newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
-                newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
-                cardDiv.style.left = newLeft + 'px';
-                cardDiv.style.top = newTop + 'px';
-              });
-
-              // --- スマホ用タッチ長押しドラッグ ---
-              cardDiv.addEventListener('touchstart', (e) => {
-                if (e.touches.length !== 1) return;
-                isTouchDragging = false;
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                cardStartLeft = parseInt(cardDiv.style.left);
-                cardStartTop = parseInt(cardDiv.style.top);
-                // 長押し判定
-                cardDiv.touchHoldTimeout = setTimeout(() => {
-                  isTouchDragging = true;
-                  cardDiv.style.opacity = '0.7';
-                  // 長押しでドラッグ開始時のみスクロール抑止
-                  document.body.style.overflow = 'hidden';
-                }, 300); // 0.3秒長押しでドラッグ開始
-              }, { passive: true });
-              cardDiv.addEventListener('touchmove', (e) => {
-                if (!isTouchDragging) return;
-                e.preventDefault();
-                const moveX = e.touches[0].clientX - touchStartX;
-                const moveY = e.touches[0].clientY - touchStartY;
-                let newLeft = cardStartLeft + moveX;
-                let newTop = cardStartTop + moveY;
-                // 配置エリア外に出せないよう制限
-                newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
-                newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
-                cardDiv.style.left = newLeft + 'px';
-                cardDiv.style.top = newTop + 'px';
-              }, { passive: false });
-              cardDiv.addEventListener('touchend', (e) => {
-                clearTimeout(cardDiv.touchHoldTimeout);
-                if (isTouchDragging) {
-                  cardDiv.style.opacity = '';
-                  isTouchDragging = false;
-                  document.body.style.overflow = '';
-                } else {
-                  // ドラッグでなければタップ扱い: 表裏切替を発火
-                  // img.click() だと click/touchend 両方で2回反応するため、
-                  // タッチ端末では click イベントを除外する
-                  if (!cardDiv._touchHandled) {
-                    cardDiv._touchHandled = true;
-                    setTimeout(() => { cardDiv._touchHandled = false; }, 400); // 連続タップ防止
-                    if (img.src.includes('tarot_back.jpg')) {
-                      img.src = 'assets/' + card.image;
-                      img.alt = card.name;
-                      name.style.display = 'block';
-                      if (!upright) cardDiv.classList.add('reverse');
-                      else cardDiv.classList.remove('reverse');
-                    } else {
-                      img.src = 'assets/tarot/tarot_back.jpg';
-                      img.alt = '裏面';
-                      name.style.display = 'none';
-                      cardDiv.classList.remove('reverse');
-                    }
-                  }
-                }
-              });
-              spreadArea.appendChild(cardDiv);
-            });
-          });
-      } catch (err) {
-        alert('読込失敗: ファイル形式が不正です');
-      }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
-});
-
-// スプレッド定義（Three Card Spread）
-const spread = {
-  name: "Three Card",
+const SAVE_VERSION = '1.0.0';
+const CARD_BACK_IMAGE = 'assets/tarot/tarot_back.jpg';
+const CARD_WIDTH = 120;
+const CARD_HEIGHT = 200;
+const DEFAULT_SPREAD = {
+  id: 'three-card',
+  name: 'Three Card',
   positions: [
-    { id: "past", label: "Past", x: 100, y: 200 },
-    { id: "present", label: "Present", x: 300, y: 200 },
-    { id: "future", label: "Future", x: 500, y: 200 }
+    { id: 'past', label: 'Past', x: 100, y: 200 },
+    { id: 'present', label: 'Present', x: 300, y: 200 },
+    { id: 'future', label: 'Future', x: 500, y: 200 }
   ]
 };
 
-// --- モード切替UI ---
-const modeArea = document.createElement('div');
-modeArea.id = 'mode-area';
-modeArea.style.margin = '10px 0';
-modeArea.style.textAlign = 'center';
-const modeLabel = document.createElement('span');
-modeLabel.id = 'mode-label';
-modeLabel.style.fontWeight = 'bold';
-modeLabel.style.marginRight = '16px';
-const modeBtn = document.createElement('button');
-modeBtn.id = 'mode-btn';
-modeBtn.style.marginLeft = '8px';
-modeArea.appendChild(modeLabel);
-modeArea.appendChild(modeBtn);
-document.body.insertBefore(modeArea, document.getElementById('spread-area'));
-
-let freeMode = true; // 初期は自由配置
-let cardIdCounter = 1; // 1から順にIDを振る
-let drawIndex = 0; // 山札から引いた枚数をグローバルで管理
-
-function updateModeUI() {
-  modeLabel.textContent = freeMode ? 'モード: 自由配置' : 'モード: スプレッド';
-  modeBtn.textContent = freeMode ? 'スプレッドモードに切替' : '自由配置モードに切替';
-}
-updateModeUI();
-
-modeBtn.onclick = () => {
-  freeMode = !freeMode;
-  updateModeUI();
-  cardIdCounter = 1; // モード切替時にIDリセット
-  renderTarot();
+const elements = {
+  spreadArea: document.getElementById('spread-area'),
+  note: document.getElementById('note'),
+  saveBtn: document.getElementById('save-btn'),
+  loadBtn: document.getElementById('load-btn')
 };
 
-// --- デッキ種別切替UI ---
-const deckModeArea = document.createElement('div');
-deckModeArea.id = 'deck-mode-area';
-deckModeArea.style.margin = '10px 0';
-deckModeArea.style.textAlign = 'center';
-const deckModeLabel = document.createElement('span');
-deckModeLabel.id = 'deck-mode-label';
-deckModeLabel.style.fontWeight = 'bold';
-deckModeLabel.style.marginRight = '16px';
-const deckModeBtn = document.createElement('button');
-deckModeBtn.id = 'deck-mode-btn';
-deckModeBtn.style.marginLeft = '8px';
-deckModeArea.appendChild(deckModeLabel);
-deckModeArea.appendChild(deckModeBtn);
-document.body.insertBefore(deckModeArea, document.getElementById('mode-area'));
-
-let useMajorOnly = true; // true:大アルカナのみ, false:大+小
-
-function updateDeckModeUI() {
-  deckModeLabel.textContent = useMajorOnly ? 'デッキ: 大アルカナのみ' : 'デッキ: 大＋小アルカナ';
-  deckModeBtn.textContent = useMajorOnly ? '大＋小アルカナに切替' : '大アルカナのみに切替';
-}
-updateDeckModeUI();
-
-deckModeBtn.onclick = () => {
-  useMajorOnly = !useMajorOnly;
-  updateDeckModeUI();
-  cardIdCounter = 1; // デッキ種別切替時にIDリセット
-  renderTarot();
+const state = {
+  deck: [],
+  shuffledDeck: [],
+  spreads: [DEFAULT_SPREAD],
+  currentSpread: DEFAULT_SPREAD,
+  freeMode: true,
+  useMajorOnly: true,
+  drawIndex: 0,
+  cardIdCounter: 1
 };
 
-function renderTarot() {
-  // deck-area, spread-areaを初期化
-  let deckArea = document.getElementById('deck-area');
-  if (!deckArea) {
-    deckArea = document.createElement('div');
-    deckArea.id = 'deck-area';
-    // deck-areaをspread-areaの直前に配置
-    document.body.insertBefore(deckArea, document.getElementById('spread-area'));
+const controls = createControls();
+
+document.addEventListener('DOMContentLoaded', init);
+elements.saveBtn.addEventListener('click', saveReading);
+elements.loadBtn.addEventListener('click', openSaveFile);
+
+async function init() {
+  setupLayout();
+  await Promise.all([loadDeck(), loadSpreads()]);
+  updateControls();
+  resetBoard();
+}
+
+function setupLayout() {
+  document.body.insertBefore(controls.deckModeArea, elements.spreadArea);
+  document.body.insertBefore(controls.modeArea, elements.spreadArea);
+  document.body.insertBefore(controls.deckArea, elements.spreadArea);
+  elements.note.parentNode.insertBefore(controls.resetBtn, elements.note.nextSibling);
+
+  controls.modeBtn.addEventListener('click', () => {
+    state.freeMode = !state.freeMode;
+    updateControls();
+    resetBoard();
+  });
+
+  controls.deckModeBtn.addEventListener('click', () => {
+    state.useMajorOnly = !state.useMajorOnly;
+    updateControls();
+    resetBoard();
+  });
+
+  controls.resetBtn.addEventListener('click', () => {
+    elements.note.value = '';
+    resetBoard();
+  });
+}
+
+function createControls() {
+  const deckModeArea = document.createElement('div');
+  deckModeArea.id = 'deck-mode-area';
+
+  const deckModeLabel = document.createElement('span');
+  deckModeLabel.id = 'deck-mode-label';
+
+  const deckModeBtn = document.createElement('button');
+  deckModeBtn.id = 'deck-mode-btn';
+  deckModeBtn.type = 'button';
+
+  deckModeArea.append(deckModeLabel, deckModeBtn);
+
+  const modeArea = document.createElement('div');
+  modeArea.id = 'mode-area';
+
+  const modeLabel = document.createElement('span');
+  modeLabel.id = 'mode-label';
+
+  const modeBtn = document.createElement('button');
+  modeBtn.id = 'mode-btn';
+  modeBtn.type = 'button';
+
+  modeArea.append(modeLabel, modeBtn);
+
+  const deckArea = document.createElement('div');
+  deckArea.id = 'deck-area';
+
+  const resetBtn = document.createElement('button');
+  resetBtn.id = 'reset-btn';
+  resetBtn.type = 'button';
+  resetBtn.textContent = '初期化';
+
+  return {
+    deckModeArea,
+    deckModeLabel,
+    deckModeBtn,
+    modeArea,
+    modeLabel,
+    modeBtn,
+    deckArea,
+    resetBtn
+  };
+}
+
+async function loadDeck() {
+  try {
+    const response = await fetch('data/deck.json');
+    if (!response.ok) throw new Error(`deck.json ${response.status}`);
+    state.deck = await response.json();
+  } catch (error) {
+    console.error(error);
+    alert('デッキデータを読み込めませんでした。');
+    state.deck = [];
   }
-  deckArea.innerHTML = '';
-  const spreadArea = document.getElementById('spread-area');
-  spreadArea.innerHTML = '';
-  spreadArea.style.position = 'relative';
-  spreadArea.style.height = (200 * 3.5) + 'px'; // カード縦3.5枚分
-  spreadArea.style.width = '100%'; // 横幅を可変に
-  spreadArea.style.maxWidth = '1200px'; // 最大幅を設定（任意）
-  spreadArea.style.margin = '0 auto 16px auto'; // 中央寄せ
-  // デッキをシャッフル
-  function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+}
+
+async function loadSpreads() {
+  try {
+    const response = await fetch('data/spreads.json');
+    if (!response.ok) throw new Error(`spreads.json ${response.status}`);
+    const spreads = await response.json();
+    if (Array.isArray(spreads) && spreads.length > 0) {
+      state.spreads = spreads;
+      state.currentSpread = spreads[0];
     }
-    return array;
+  } catch (error) {
+    console.warn('スプレッド定義は既定値を使います。', error);
+    state.spreads = [DEFAULT_SPREAD];
+    state.currentSpread = DEFAULT_SPREAD;
   }
-  fetch('data/deck.json')
-    .then(res => res.json())
-    .then(deck => {
-      // デッキ種別でフィルタ
-      const filteredDeck = useMajorOnly ? deck.filter(c => c.arcana === 'Major') : deck;
-      const shuffled = shuffle([...filteredDeck]);
-      drawIndex = 0; // デッキ描画時にリセット
-      // 山札（裏面）をdeck-areaに表示
-      const deckDiv = document.createElement('div');
-      deckDiv.className = 'tarot-deck';
-      deckDiv.style.cursor = 'pointer';
-      deckDiv.style.transform = 'none'; // 山札にはtransformを絶対に適用しない
-      // 画像
-      const deckImg = document.createElement('img');
-      deckImg.src = 'assets/tarot/tarot_back.jpg';
-      deckImg.alt = '山札';
-      deckImg.style.width = '120px';
-      deckImg.style.height = '200px';
-      deckDiv.appendChild(deckImg);
-      deckArea.appendChild(deckDiv);
-      if (freeMode) {
-        // --- 自由配置モード ---
-        deckDiv.addEventListener('click', () => {
-          if (drawIndex >= shuffled.length) return;
-          const card = shuffled[drawIndex];
-          // 正位置・逆位置をランダム決定
-          const upright = Math.random() < 0.5;
-          // --- カードをspread-area左上から順に配置（重ならないように） ---
-          const areaWidth = spreadArea.offsetWidth;
-          const cardsPerRow = Math.max(1, Math.floor(areaWidth / 140)); // 120px+余白20px
-          const cardRow = Math.floor(drawIndex / cardsPerRow);
-          const cardCol = drawIndex % cardsPerRow;
-          const left = 20 + cardCol * 140;
-          const top = 20 + cardRow * 220;
-          const cardDiv = document.createElement('div');
-          cardDiv.className = 'tarot-card';
-          cardDiv.style.position = 'absolute';
-          cardDiv.style.left = left + 'px';
-          cardDiv.style.top = top + 'px';
-          cardDiv.style.textAlign = 'center';
-          cardDiv.setAttribute('draggable', 'true');
-          cardDiv.dataset.index = drawIndex;
-          cardDiv.dataset.cardId = cardIdCounter; // IDを付与
-          cardDiv.style.transform = 'none';
-          // 画像（初期は裏面）
-          const img = document.createElement('img');
-          img.src = 'assets/tarot/tarot_back.jpg';
-          img.alt = '裏面';
-          img.style.width = '120px';
-          img.style.height = '200px';
-          img.style.cursor = 'pointer';
-          // カード名（初期は非表示）
-          const name = document.createElement('div');
-          name.textContent = `${card.name}：${cardIdCounter}`;
-          name.style.marginTop = '8px';
-          name.style.display = 'none';
-          cardDiv.appendChild(img);
-          cardDiv.appendChild(name);
-          cardDiv.style.transform = 'none';
-          spreadArea.appendChild(cardDiv);
-          // タップで表裏切替
-          let touchHandled = false;
-          img.addEventListener('click', (e) => {
-            if (touchHandled) {
-              // 直前のtouchendで処理済みならclickは無視
-              touchHandled = false;
-              return;
-            }
-            if (img.src.includes('tarot_back.jpg')) {
-              img.src = 'assets/' + card.image;
-              img.alt = card.name;
-              name.style.display = 'block';
-              if (!upright) cardDiv.classList.add('reverse');
-              else cardDiv.classList.remove('reverse');
-            } else {
-              img.src = 'assets/tarot/tarot_back.jpg';
-              img.alt = '裏面';
-              name.style.display = 'none';
-              cardDiv.classList.remove('reverse');
-            }
-          });
-          // ドラッグ＆ドロップ
-          let dragOffsetX, dragOffsetY;
-          let isTouchDragging = false;
-          let touchStartX, touchStartY;
-          let cardStartLeft, cardStartTop;
-
-          // --- PC用ドラッグ ---
-          cardDiv.addEventListener('dragstart', (e) => {
-            const cardRect = cardDiv.getBoundingClientRect();
-            dragOffsetX = e.clientX - cardRect.left;
-            dragOffsetY = e.clientY - cardRect.top;
-          });
-          cardDiv.addEventListener('dragend', (e) => {
-            const rect = spreadArea.getBoundingClientRect();
-            let newLeft = e.clientX - rect.left - dragOffsetX;
-            let newTop = e.clientY - rect.top - dragOffsetY;
-            // 配置エリア外に出せないよう制限
-            newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
-            cardDiv.style.left = newLeft + 'px';
-            cardDiv.style.top = newTop + 'px';
-          });
-
-          // --- スマホ用タッチ長押しドラッグ ---
-          cardDiv.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) return;
-            isTouchDragging = false;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            cardStartLeft = parseInt(cardDiv.style.left);
-            cardStartTop = parseInt(cardDiv.style.top);
-            // 長押し判定
-            cardDiv.touchHoldTimeout = setTimeout(() => {
-              isTouchDragging = true;
-              cardDiv.style.opacity = '0.7';
-              // 長押しでドラッグ開始時のみスクロール抑止
-              document.body.style.overflow = 'hidden';
-            }, 300); // 0.3秒長押しでドラッグ開始
-          }, { passive: true });
-          cardDiv.addEventListener('touchmove', (e) => {
-            if (!isTouchDragging) return;
-            e.preventDefault();
-            const moveX = e.touches[0].clientX - touchStartX;
-            const moveY = e.touches[0].clientY - touchStartY;
-            let newLeft = cardStartLeft + moveX;
-            let newTop = cardStartTop + moveY;
-            // 配置エリア外に出せないよう制限
-            newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
-            cardDiv.style.left = newLeft + 'px';
-            cardDiv.style.top = newTop + 'px';
-          }, { passive: false });
-          cardDiv.addEventListener('touchend', (e) => {
-            clearTimeout(cardDiv.touchHoldTimeout);
-            if (isTouchDragging) {
-              cardDiv.style.opacity = '';
-              isTouchDragging = false;
-              document.body.style.overflow = '';
-            } else {
-              // ドラッグでなければタップ扱い: 表裏切替を直接実行し、clickイベントは無視させる
-              touchHandled = true;
-              setTimeout(() => { touchHandled = false; }, 400); // 連続タップ防止
-              if (img.src.includes('tarot_back.jpg')) {
-                img.src = 'assets/' + card.image;
-                img.alt = card.name;
-                name.style.display = 'block';
-                if (!upright) cardDiv.classList.add('reverse');
-                else cardDiv.classList.remove('reverse');
-              } else {
-                img.src = 'assets/tarot/tarot_back.jpg';
-                img.alt = '裏面';
-                name.style.display = 'none';
-                cardDiv.classList.remove('reverse');
-              }
-            }
-          });
-          cardIdCounter++;
-          drawIndex++;
-          if (drawIndex >= shuffled.length) {
-            deckArea.innerHTML = '';
-          }
-        });
-      } else {
-        // --- スプレッドモード ---
-        deckDiv.addEventListener('click', () => {
-          if (drawIndex >= spread.positions.length || drawIndex >= shuffled.length) return;
-          const card = shuffled[drawIndex];
-          // --- 自由配置モードと同じ描画・情報付与ルールで ---
-          const upright = Math.random() < 0.5;
-          // 配置位置はスプレッド定義
-          const pos = spread.positions[drawIndex];
-          const left = pos.x;
-          const top = pos.y;
-          const cardDiv = document.createElement('div');
-          cardDiv.className = 'tarot-card';
-          cardDiv.style.position = 'absolute';
-          cardDiv.style.left = left + 'px';
-          cardDiv.style.top = top + 'px';
-          cardDiv.style.textAlign = 'center';
-          cardDiv.setAttribute('draggable', 'true');
-          cardDiv.dataset.index = drawIndex;
-          cardDiv.dataset.cardId = cardIdCounter; // IDを付与
-          cardDiv.style.transform = 'none';
-          // 画像（初期は裏面）
-          const img = document.createElement('img');
-          img.src = 'assets/tarot/tarot_back.jpg';
-          img.alt = '裏面';
-          img.style.width = '120px';
-          img.style.height = '200px';
-          img.style.cursor = 'pointer';
-          // カード名（初期は非表示）
-          const name = document.createElement('div');
-          name.textContent = `${card.name}：${cardIdCounter} (${pos.label})`;
-          name.style.marginTop = '8px';
-          name.style.display = 'none';
-          cardDiv.appendChild(img);
-          cardDiv.appendChild(name);
-          cardDiv.style.transform = 'none';
-          spreadArea.appendChild(cardDiv);
-          // タップで表裏切替
-          img.addEventListener('click', () => {
-            if (img.src.includes('tarot_back.jpg')) {
-              img.src = 'assets/' + card.image;
-              img.alt = card.name;
-              name.style.display = 'block';
-              if (!upright) cardDiv.classList.add('reverse');
-              else cardDiv.classList.remove('reverse');
-            } else {
-              img.src = 'assets/tarot/tarot_back.jpg';
-              img.alt = '裏面';
-              name.style.display = 'none';
-              cardDiv.classList.remove('reverse');
-            }
-          });
-          // ドラッグ＆ドロップ
-          let dragOffsetX, dragOffsetY;
-          let isTouchDragging = false;
-          let touchStartX, touchStartY;
-          let cardStartLeft, cardStartTop;
-
-          // --- PC用ドラッグ ---
-          cardDiv.addEventListener('dragstart', (e) => {
-            const cardRect = cardDiv.getBoundingClientRect();
-            dragOffsetX = e.clientX - cardRect.left;
-            dragOffsetY = e.clientY - cardRect.top;
-          });
-          cardDiv.addEventListener('dragend', (e) => {
-            const rect = spreadArea.getBoundingClientRect();
-            let newLeft = e.clientX - rect.left - dragOffsetX;
-            let newTop = e.clientY - rect.top - dragOffsetY;
-            // 配置エリア外に出せないよう制限
-            newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
-            cardDiv.style.left = newLeft + 'px';
-            cardDiv.style.top = newTop + 'px';
-          });
-
-          // --- スマホ用タッチ長押しドラッグ ---
-          cardDiv.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) return;
-            isTouchDragging = false;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            cardStartLeft = parseInt(cardDiv.style.left);
-            cardStartTop = parseInt(cardDiv.style.top);
-            // 長押し判定
-            cardDiv.touchHoldTimeout = setTimeout(() => {
-              isTouchDragging = true;
-              cardDiv.style.opacity = '0.7';
-              // 長押しでドラッグ開始時のみスクロール抑止
-              document.body.style.overflow = 'hidden';
-            }, 300); // 0.3秒長押しでドラッグ開始
-          }, { passive: true });
-          cardDiv.addEventListener('touchmove', (e) => {
-            if (!isTouchDragging) return;
-            e.preventDefault();
-            const moveX = e.touches[0].clientX - touchStartX;
-            const moveY = e.touches[0].clientY - touchStartY;
-            let newLeft = cardStartLeft + moveX;
-            let newTop = cardStartTop + moveY;
-            // 配置エリア外に出せないよう制限
-            newLeft = Math.max(0, Math.min(newLeft, spreadArea.offsetWidth - cardDiv.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, spreadArea.offsetHeight - cardDiv.offsetHeight));
-            cardDiv.style.left = newLeft + 'px';
-            cardDiv.style.top = newTop + 'px';
-          }, { passive: false });
-          cardDiv.addEventListener('touchend', (e) => {
-            clearTimeout(cardDiv.touchHoldTimeout);
-            if (isTouchDragging) {
-              cardDiv.style.opacity = '';
-              isTouchDragging = false;
-              document.body.style.overflow = '';
-            } else {
-              // ドラッグでなければタップ扱い: 表裏切替を発火
-              // img.click() だと click/touchend 両方で2回反応するため、
-              // タッチ端末では click イベントを除外する
-              if (!cardDiv._touchHandled) {
-                cardDiv._touchHandled = true;
-                setTimeout(() => { cardDiv._touchHandled = false; }, 400); // 連続タップ防止
-                if (img.src.includes('tarot_back.jpg')) {
-                  img.src = 'assets/' + card.image;
-                  img.alt = card.name;
-                  name.style.display = 'block';
-                  if (!upright) cardDiv.classList.add('reverse');
-                  else cardDiv.classList.remove('reverse');
-                } else {
-                  img.src = 'assets/tarot/tarot_back.jpg';
-                  img.alt = '裏面';
-                  name.style.display = 'none';
-                  cardDiv.classList.remove('reverse');
-                }
-              }
-            }
-          });
-          cardIdCounter++;
-          drawIndex++;
-          if (drawIndex >= spread.positions.length) {
-            deckArea.innerHTML = '';
-          }
-        });
-      }
-    });
 }
 
-// --- 盤面初期化ボタン ---
-const resetBtn = document.createElement('button');
-resetBtn.id = 'reset-btn';
-resetBtn.textContent = '初期化';
-resetBtn.style.marginLeft = '8px';
-const noteElem = document.getElementById('note');
-// noteの直後に追加
-noteElem.parentNode.insertBefore(resetBtn, noteElem.nextSibling);
+function updateControls() {
+  controls.modeLabel.textContent = state.freeMode ? 'モード: 自由配置' : 'モード: スプレッド';
+  controls.modeBtn.textContent = state.freeMode ? 'スプレッドモードに切替' : '自由配置モードに切替';
+  controls.deckModeLabel.textContent = state.useMajorOnly ? 'デッキ: 大アルカナのみ' : 'デッキ: 大＋小アルカナ';
+  controls.deckModeBtn.textContent = state.useMajorOnly ? '大＋小アルカナに切替' : '大アルカナのみに切替';
+}
 
-resetBtn.addEventListener('click', () => {
-  // 盤面・メモを初期化
-  document.getElementById('spread-area').innerHTML = '';
-  document.getElementById('deck-area').innerHTML = '';
-  document.getElementById('note').value = '';
-  cardIdCounter = 1; // 初期化時にIDリセット
-  // 山札・UIを再描画
-  renderTarot();
-});
+function resetBoard() {
+  state.drawIndex = 0;
+  state.cardIdCounter = 1;
+  elements.spreadArea.innerHTML = '';
+  controls.deckArea.innerHTML = '';
+  state.shuffledDeck = shuffle(getActiveDeck());
+  renderDeck();
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  renderTarot();
-});
+function getActiveDeck() {
+  return state.useMajorOnly ? state.deck.filter(card => card.arcana === 'Major') : state.deck;
+}
+
+function shuffle(cards) {
+  const shuffled = [...cards];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+  }
+  return shuffled;
+}
+
+function renderDeck() {
+  if (state.shuffledDeck.length === 0) return;
+
+  const deck = document.createElement('button');
+  deck.className = 'tarot-deck';
+  deck.type = 'button';
+  deck.setAttribute('aria-label', 'カードを引く');
+
+  const image = document.createElement('img');
+  image.src = CARD_BACK_IMAGE;
+  image.alt = '山札';
+  deck.appendChild(image);
+
+  deck.addEventListener('click', drawCard);
+  controls.deckArea.appendChild(deck);
+}
+
+function drawCard() {
+  const limit = state.freeMode ? state.shuffledDeck.length : state.currentSpread.positions.length;
+  if (state.drawIndex >= limit || state.drawIndex >= state.shuffledDeck.length) {
+    controls.deckArea.innerHTML = '';
+    return;
+  }
+
+  const card = state.shuffledDeck[state.drawIndex];
+  const placement = getNextPlacement();
+  const readingCard = {
+    id: card.id,
+    drawId: state.cardIdCounter,
+    name: card.name,
+    arcana: card.arcana,
+    number: card.number,
+    suit: card.suit || null,
+    image: card.image,
+    position: placement.position,
+    x: placement.x,
+    y: placement.y,
+    upright: Math.random() < 0.5,
+    revealed: false
+  };
+
+  elements.spreadArea.appendChild(createCardElement(readingCard));
+  state.cardIdCounter += 1;
+  state.drawIndex += 1;
+
+  if (state.drawIndex >= limit || state.drawIndex >= state.shuffledDeck.length) {
+    controls.deckArea.innerHTML = '';
+  }
+}
+
+function getNextPlacement() {
+  if (!state.freeMode) {
+    const position = state.currentSpread.positions[state.drawIndex];
+    return {
+      x: position.x,
+      y: position.y,
+      position: {
+        id: position.id,
+        label: position.label
+      }
+    };
+  }
+
+  const areaWidth = elements.spreadArea.offsetWidth || window.innerWidth;
+  const cardsPerRow = Math.max(1, Math.floor(areaWidth / (CARD_WIDTH + 20)));
+  const row = Math.floor(state.drawIndex / cardsPerRow);
+  const col = state.drawIndex % cardsPerRow;
+
+  return {
+    x: 20 + col * (CARD_WIDTH + 20),
+    y: 20 + row * (CARD_HEIGHT + 20),
+    position: null
+  };
+}
+
+function createCardElement(card) {
+  const cardElement = document.createElement('div');
+  cardElement.className = 'tarot-card';
+  cardElement.draggable = true;
+  cardElement.dataset.card = JSON.stringify(card);
+  cardElement.style.left = `${card.x}px`;
+  cardElement.style.top = `${card.y}px`;
+
+  const image = document.createElement('img');
+  image.src = card.revealed ? getCardImage(card) : CARD_BACK_IMAGE;
+  image.alt = card.revealed ? card.name : '裏面';
+
+  const name = document.createElement('div');
+  name.className = 'tarot-card-name';
+  name.textContent = getCardLabel(card);
+  name.hidden = !card.revealed;
+
+  cardElement.append(image, name);
+  applyCardFace(cardElement, card);
+  bindCardEvents(cardElement);
+
+  return cardElement;
+}
+
+function getCardLabel(card) {
+  const position = card.position ? ` (${card.position.label})` : '';
+  return `${card.name}：${card.drawId}${position}`;
+}
+
+function getCardImage(card) {
+  return card.image.startsWith('assets/') ? card.image : `assets/${card.image}`;
+}
+
+function bindCardEvents(cardElement) {
+  let dragOffsetX = 0;
+  let dragOffsetY = 0;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let cardStartLeft = 0;
+  let cardStartTop = 0;
+  let isTouchDragging = false;
+  let touchHandled = false;
+  let holdTimer = null;
+
+  cardElement.addEventListener('click', () => {
+    if (touchHandled) {
+      touchHandled = false;
+      return;
+    }
+    toggleCard(cardElement);
+  });
+
+  cardElement.addEventListener('dragstart', event => {
+    const rect = cardElement.getBoundingClientRect();
+    dragOffsetX = event.clientX - rect.left;
+    dragOffsetY = event.clientY - rect.top;
+  });
+
+  cardElement.addEventListener('dragend', event => {
+    if (event.clientX === 0 && event.clientY === 0) return;
+    const areaRect = elements.spreadArea.getBoundingClientRect();
+    moveCard(cardElement, event.clientX - areaRect.left - dragOffsetX, event.clientY - areaRect.top - dragOffsetY);
+  });
+
+  cardElement.addEventListener('touchstart', event => {
+    if (event.touches.length !== 1) return;
+    isTouchDragging = false;
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+    cardStartLeft = parseInt(cardElement.style.left, 10) || 0;
+    cardStartTop = parseInt(cardElement.style.top, 10) || 0;
+    holdTimer = setTimeout(() => {
+      isTouchDragging = true;
+      cardElement.style.opacity = '0.7';
+      document.body.style.overflow = 'hidden';
+    }, 300);
+  }, { passive: true });
+
+  cardElement.addEventListener('touchmove', event => {
+    if (!isTouchDragging) return;
+    event.preventDefault();
+    const moveX = event.touches[0].clientX - touchStartX;
+    const moveY = event.touches[0].clientY - touchStartY;
+    moveCard(cardElement, cardStartLeft + moveX, cardStartTop + moveY);
+  }, { passive: false });
+
+  cardElement.addEventListener('touchend', () => {
+    clearTimeout(holdTimer);
+    if (isTouchDragging) {
+      isTouchDragging = false;
+      cardElement.style.opacity = '';
+      document.body.style.overflow = '';
+      return;
+    }
+
+    touchHandled = true;
+    setTimeout(() => {
+      touchHandled = false;
+    }, 400);
+    toggleCard(cardElement);
+  });
+}
+
+function toggleCard(cardElement) {
+  const card = getCardData(cardElement);
+  card.revealed = !card.revealed;
+  setCardData(cardElement, card);
+  applyCardFace(cardElement, card);
+}
+
+function applyCardFace(cardElement, card) {
+  const image = cardElement.querySelector('img');
+  const name = cardElement.querySelector('.tarot-card-name');
+
+  if (card.revealed) {
+    image.src = getCardImage(card);
+    image.alt = card.name;
+    name.hidden = false;
+    cardElement.classList.toggle('reverse', !card.upright);
+  } else {
+    image.src = CARD_BACK_IMAGE;
+    image.alt = '裏面';
+    name.hidden = true;
+    cardElement.classList.remove('reverse');
+  }
+}
+
+function moveCard(cardElement, rawLeft, rawTop) {
+  const left = clamp(rawLeft, 0, elements.spreadArea.offsetWidth - cardElement.offsetWidth);
+  const top = clamp(rawTop, 0, elements.spreadArea.offsetHeight - cardElement.offsetHeight);
+  const card = getCardData(cardElement);
+
+  card.x = Math.round(left);
+  card.y = Math.round(top);
+  cardElement.style.left = `${card.x}px`;
+  cardElement.style.top = `${card.y}px`;
+  setCardData(cardElement, card);
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(value, Math.max(min, max)));
+}
+
+function getCardData(cardElement) {
+  return JSON.parse(cardElement.dataset.card);
+}
+
+function setCardData(cardElement, card) {
+  cardElement.dataset.card = JSON.stringify(card);
+}
+
+function collectCards() {
+  return Array.from(elements.spreadArea.querySelectorAll('.tarot-card')).map(cardElement => {
+    const card = getCardData(cardElement);
+    return {
+      ...card,
+      x: parseInt(cardElement.style.left, 10) || card.x,
+      y: parseInt(cardElement.style.top, 10) || card.y
+    };
+  });
+}
+
+async function saveReading() {
+  const saveData = {
+    version: SAVE_VERSION,
+    date: new Date().toISOString(),
+    mode: state.freeMode ? 'free' : 'spread',
+    deckMode: state.useMajorOnly ? 'major' : 'full',
+    spread: state.freeMode ? null : {
+      id: state.currentSpread.id,
+      name: state.currentSpread.name,
+      positions: state.currentSpread.positions
+    },
+    cards: collectCards(),
+    note: elements.note.value
+  };
+
+  downloadJson(saveData);
+  await downloadScreenshot();
+}
+
+function downloadJson(data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  downloadUrl(url, `tarot_save_${Date.now()}.json`);
+  URL.revokeObjectURL(url);
+}
+
+async function downloadScreenshot() {
+  if (typeof html2canvas !== 'function') return;
+
+  try {
+    const canvas = await html2canvas(elements.spreadArea, {
+      backgroundColor: '#f8f8f8',
+      useCORS: true
+    });
+    const url = canvas.toDataURL('image/png');
+    downloadUrl(url, `tarot_board_${Date.now()}.png`);
+  } catch (error) {
+    console.warn('スクリーンショット保存に失敗しました。', error);
+  }
+}
+
+function downloadUrl(url, filename) {
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
+
+function openSaveFile() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json';
+  input.addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    loadSaveFile(file);
+  });
+  input.click();
+}
+
+function loadSaveFile(file) {
+  const reader = new FileReader();
+  reader.addEventListener('load', event => {
+    try {
+      const data = JSON.parse(event.target.result);
+      restoreReading(normalizeSaveData(data));
+    } catch (error) {
+      console.error(error);
+      alert('読込失敗: ファイル形式が不正です');
+    }
+  });
+  reader.readAsText(file);
+}
+
+function normalizeSaveData(data) {
+  return {
+    version: data.version || 'legacy',
+    mode: data.mode === 'spread' ? 'spread' : 'free',
+    deckMode: data.deckMode === 'full' ? 'full' : 'major',
+    spread: data.spread || null,
+    note: data.note || '',
+    cards: Array.isArray(data.cards) ? data.cards.map(normalizeCardData).filter(Boolean) : []
+  };
+}
+
+function normalizeCardData(card) {
+  if (card.id && card.image) return card;
+
+  const name = card.name || '';
+  const deckCard = state.deck.find(item => item.name === name);
+  if (!deckCard) return null;
+
+  return {
+    id: deckCard.id,
+    drawId: card.id || card.drawId || null,
+    name: deckCard.name,
+    arcana: deckCard.arcana,
+    number: deckCard.number,
+    suit: deckCard.suit || null,
+    image: deckCard.image,
+    position: card.position || null,
+    x: card.x || card.left || 0,
+    y: card.y || card.top || 0,
+    upright: typeof card.upright === 'boolean' ? card.upright : true,
+    revealed: typeof card.revealed === 'boolean' ? card.revealed : Boolean(card.isFace)
+  };
+}
+
+function restoreReading(data) {
+  state.freeMode = data.mode !== 'spread';
+  state.useMajorOnly = data.deckMode !== 'full';
+  state.cardIdCounter = 1;
+  elements.note.value = data.note;
+  elements.spreadArea.innerHTML = '';
+  controls.deckArea.innerHTML = '';
+
+  data.cards.forEach(card => {
+    const restoredCard = {
+      ...card,
+      drawId: card.drawId || state.cardIdCounter
+    };
+    elements.spreadArea.appendChild(createCardElement(restoredCard));
+    state.cardIdCounter = Math.max(state.cardIdCounter, restoredCard.drawId + 1);
+  });
+
+  updateControls();
+}

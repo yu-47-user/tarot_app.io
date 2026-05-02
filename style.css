@@ -9,6 +9,15 @@ body {
 #mode-area {
   margin-bottom: 12px;
 }
+#deck-mode-area,
+#mode-area {
+  text-align: center;
+}
+#deck-mode-label,
+#mode-label {
+  font-weight: bold;
+  margin-right: 16px;
+}
 #deck-area {
   display: flex;
   justify-content: flex-start;
@@ -35,17 +44,35 @@ h1 {
   margin-bottom: 24px;
   text-align: center;
   font-size: 2rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0;
 }
 .tarot-deck {
   margin-left: 24px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  line-height: 0;
+}
+.tarot-deck:hover {
+  background: transparent;
+}
+.tarot-deck img,
+.tarot-card img {
+  width: 120px;
+  height: 200px;
 }
 .tarot-card {
+  position: absolute;
+  text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   border-radius: 8px;
   background: #fff;
   padding: 4px;
+  cursor: pointer;
   /* 逆位置時のテキスト反転を防ぐ */
+}
+.tarot-card-name {
+  margin-top: 8px;
 }
 .tarot-card.reverse img {
   transform: rotate(180deg);
