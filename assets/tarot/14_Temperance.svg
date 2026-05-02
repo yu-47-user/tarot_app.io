@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="528" viewBox="0 0 300 528" role="img" aria-labelledby="title desc">
+  <title id="title">Temperance</title>
+  <desc id="desc">A tarot card illustration for Temperance with a balanced angel, flowing water, and luminous cups.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7efe0"/>
+      <stop offset="55%" stop-color="#efe0c7"/>
+      <stop offset="100%" stop-color="#dbc2a1"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7df" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#f0c972" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7cb9c6"/>
+      <stop offset="100%" stop-color="#4d7f92"/>
+    </linearGradient>
+    <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5f7f88"/>
+      <stop offset="100%" stop-color="#32434b"/>
+    </linearGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#5b4430" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <rect width="300" height="528" fill="#f5ead7"/>
+  <rect x="12" y="12" width="276" height="504" rx="16" fill="url(#sky)" stroke="#6f5847" stroke-width="2"/>
+  <rect x="24" y="24" width="252" height="480" rx="12" fill="none" stroke="#f8f1e6" stroke-width="2"/>
+
+  <circle cx="150" cy="96" r="58" fill="url(#glow)"/>
+  <circle cx="150" cy="96" r="34" fill="none" stroke="#fff2c4" stroke-width="2" opacity="0.55"/>
+
+  <path d="M48 382 C82 338, 100 332, 126 326 C146 322, 156 322, 176 326 C204 332, 224 340, 252 382" fill="none" stroke="#d8be95" stroke-width="18" stroke-linecap="round" opacity="0.55"/>
+  <path d="M40 392 C76 352, 102 346, 128 340 C147 336, 153 336, 173 340 C200 346, 223 355, 260 392" fill="none" stroke="#f0dfc1" stroke-width="8" stroke-linecap="round" opacity="0.9"/>
+
+  <g filter="url(#softShadow)">
+    <path d="M150 136 C166 136, 174 147, 178 160 C186 185, 187 214, 181 240 C177 258, 167 272, 150 279 C133 272, 123 258, 119 240 C113 214, 114 185, 122 160 C126 147, 134 136, 150 136 Z" fill="url(#robe)"/>
+    <path d="M124 186 C136 174, 164 174, 176 186 C168 207, 164 228, 160 256 C154 264, 146 268, 140 268 C134 268, 126 264, 120 256 C116 228, 112 207, 124 186 Z" fill="#87a1a8" opacity="0.55"/>
+    <path d="M128 146 C140 134, 160 134, 172 146 C170 158, 166 167, 160 173 L140 173 C134 167, 130 158, 128 146 Z" fill="#f8efe0"/>
+    <path d="M134 142 C140 128, 160 128, 166 142 C162 147, 156 150, 150 150 C144 150, 138 147, 134 142 Z" fill="#ead19b"/>
+    <circle cx="130" cy="158" r="13" fill="#f2dfc7"/>
+    <circle cx="170" cy="158" r="13" fill="#f2dfc7"/>
+    <path d="M118 161 C106 170, 98 183, 92 198 C86 213, 84 230, 88 248" fill="none" stroke="#516a73" stroke-width="10" stroke-linecap="round"/>
+    <path d="M182 161 C194 170, 202 183, 208 198 C214 213, 216 230, 212 248" fill="none" stroke="#516a73" stroke-width="10" stroke-linecap="round"/>
+    <path d="M112 154 C100 144, 94 129, 90 112 C86 95, 84 76, 84 58" fill="none" stroke="#5f7f88" stroke-width="8" stroke-linecap="round"/>
+    <path d="M188 154 C200 144, 206 129, 210 112 C214 95, 216 76, 216 58" fill="none" stroke="#5f7f88" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <path d="M92 116 C102 104, 117 98, 133 98 C145 98, 154 102, 160 110" fill="none" stroke="#e7d4a0" stroke-width="5" stroke-linecap="round"/>
+  <path d="M208 116 C198 104, 183 98, 167 98 C155 98, 146 102, 140 110" fill="none" stroke="#e7d4a0" stroke-width="5" stroke-linecap="round"/>
+
+  <path d="M107 150 C104 170, 103 187, 105 206 C108 230, 116 251, 128 271" fill="none" stroke="url(#water)" stroke-width="9" stroke-linecap="round"/>
+  <path d="M193 150 C196 170, 197 187, 195 206 C192 230, 184 251, 172 271" fill="none" stroke="#d9b05d" stroke-width="9" stroke-linecap="round"/>
+
+  <g fill="#f7f0e3" stroke="#6f5847" stroke-width="2">
+    <path d="M100 84 h28 c0 20-5 32-14 38 c-9-6-14-18-14-38z"/>
+    <path d="M172 84 h28 c0 20-5 32-14 38 c-9-6-14-18-14-38z"/>
+  </g>
+  <g fill="#d9b05d" opacity="0.95">
+    <circle cx="102" cy="88" r="4"/>
+    <circle cx="126" cy="88" r="4"/>
+    <circle cx="174" cy="88" r="4"/>
+    <circle cx="198" cy="88" r="4"/>
+  </g>
+
+  <path d="M150 204 L134 240 L150 236 L166 240 Z" fill="#f7d58e" stroke="#6f5847" stroke-width="2"/>
+  <path d="M150 204 L145 223 L155 223 Z" fill="#fff8e8" opacity="0.8"/>
+
+  <path d="M150 270 C132 296, 120 324, 108 360" fill="none" stroke="#8c7b68" stroke-width="4" stroke-linecap="round"/>
+  <path d="M150 270 C168 296, 180 324, 192 360" fill="none" stroke="#8c7b68" stroke-width="4" stroke-linecap="round"/>
+
+  <path d="M78 368 C102 356, 119 350, 150 350 C181 350, 198 356, 222 368" fill="none" stroke="#f6ead2" stroke-width="3" opacity="0.8"/>
+  <path d="M64 404 C94 392, 120 386, 150 386 C180 386, 206 392, 236 404" fill="none" stroke="#f6ead2" stroke-width="3" opacity="0.8"/>
+
+  <text x="150" y="474" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="27" letter-spacing="2" fill="#5e4737">TEMPERANCE</text>
+  <text x="150" y="498" text-anchor="middle" font-family="Noto Sans JP, sans-serif" font-size="14" fill="#7f6656">節制</text>
+</svg>
