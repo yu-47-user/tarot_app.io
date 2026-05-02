@@ -28,6 +28,7 @@ body {
   font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
   background: linear-gradient(180deg, #efe5d6 0%, #f8f2e9 28%, #f5efe6 100%);
   color: var(--text);
+  -webkit-tap-highlight-color: transparent;
 }
 
 button,
@@ -101,6 +102,11 @@ button:disabled {
 .board-panel,
 .detail-panel {
   padding: 22px;
+}
+
+.board-panel {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .panel-heading {
@@ -235,7 +241,7 @@ button:disabled {
 .deck-stack__cards {
   position: relative;
   width: min(156px, 28vw);
-  aspect-ratio: 0.595 / 1;
+  aspect-ratio: 300 / 528;
 }
 
 .deck-stack__cards img {
@@ -288,7 +294,7 @@ button:disabled {
 .spread-slot {
   position: absolute;
   width: min(180px, 28%);
-  aspect-ratio: 0.595 / 1;
+  aspect-ratio: 300 / 528;
   transform: translate(-50%, -50%);
   border: 1px dashed rgba(106, 93, 83, 0.35);
   border-radius: 8px;
@@ -318,9 +324,10 @@ button:disabled {
 
 .reading-card {
   position: absolute;
-  width: clamp(112px, 18%, 156px);
-  aspect-ratio: 0.595 / 1;
+  width: clamp(128px, 20%, 172px);
   z-index: 2;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .reading-card.is-selected {
@@ -333,7 +340,6 @@ button:disabled {
 
 .reading-card__button {
   width: 100%;
-  height: 100%;
   border: 0;
   padding: 0;
   border-radius: 8px;
@@ -341,15 +347,22 @@ button:disabled {
   background: transparent;
   box-shadow: 0 22px 34px rgba(45, 28, 13, 0.16);
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .reading-card__image {
   width: 100%;
-  height: calc(100% - 54px);
-  object-fit: cover;
+  aspect-ratio: 300 / 528;
+  height: auto;
+  object-fit: contain;
   display: block;
   background: #eadfcf;
   transition: transform 160ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 
 .reading-card.is-revealed .reading-card__image {
@@ -457,21 +470,32 @@ button:disabled {
     padding-top: 22px;
   }
 
+  .controls-panel,
+  .board-panel,
+  .detail-panel {
+    padding: 16px;
+  }
+
   .control-grid,
   .control-summary {
     grid-template-columns: 1fr;
   }
 
   .spread-area {
-    min-height: 760px;
-    padding: 18px;
+    min-width: 620px;
+    min-height: 720px;
+    padding: 20px;
   }
 
   .spread-slot {
-    width: min(170px, 42%);
+    width: 154px;
   }
 
   .reading-card {
-    width: clamp(108px, 32vw, 148px);
+    width: 142px;
+  }
+
+  .button-row button {
+    flex: 1 1 140px;
   }
 }
